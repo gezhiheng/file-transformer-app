@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow } = require('electron/main')
 const path = require('node:path')
 const service = require('./scripts/service')
 
@@ -6,8 +6,16 @@ let mainWindow
 
 const createWindow = () => {
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1500,
+    height: 660,
+    resizable: false,
+    maximizable: false,
+    titleBarStyle: 'hidden',
+    titleBarOverlay: {
+      color: '#fff',
+      symbolColor: '#323232',
+      height: 30,
+    },
     webPreferences: {
       preload: path.join(__dirname, '/scripts/preload.js'),
     },

@@ -2,7 +2,7 @@ const { contextBridge, ipcRenderer } = require('electron/renderer')
 
 contextBridge.exposeInMainWorld('api', {
   send: (channel, data) => {
-    let validChannels = ['toMain']
+    let validChannels = ['toMain', 'readFile', 'genMachineTimeFileTask']
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data)
     }
@@ -13,4 +13,5 @@ contextBridge.exposeInMainWorld('api', {
       ipcRenderer.on(channel, (event, ...args) => func(...args))
     }
   },
+  openFile: () => ipcRenderer.invoke('dialog:openFile'),
 })
