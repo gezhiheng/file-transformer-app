@@ -1,76 +1,70 @@
-const { ipcMain, dialog } = require('electron/main')
-const schedule = require('node-schedule')
 const fs = require('fs')
 const path = require('path')
 const readline = require('readline')
-const xlsx = require('node-xlsx')
+const schedule = require('node-schedule')
 const _ = require('lodash')
-
-const { originMachineReportExcelData } = require('./constants')
-
-let win
-let task
-
-function service(mainWindow) {
-  win = mainWindow
-
-  ipcMain.handle('dialog:openFile', handleFileOpen)
-  ipcMain.on('genMachineTimeFileTask', runGenMachineTimeFileTask)
-}
-
-async function handleFileOpen () {
-  const { canceled, filePaths } = await dialog.showOpenDialog({ properties: ['openDirectory'] })
-  if (!canceled) {
-    return filePaths[0]
-  }
-}
+const { originMachineReportExcelData } = require('./constants.cjs')
+const write2Excel = require('./write2excel.cjs')
 
 let filePathObj
+let task
+let isFirstRun = true
+let win
 
-async function runGenMachineTimeFileTask(event, obj) {
+async function runGenMachineTimeFileTask(event, obj, mainWindow) {
+  win = mainWindow
   filePathObj = obj
-  task = schedule.scheduleJob('1 0 * * *', () => {
-    console.log('run task')
-  })
-  if (obj.mtFilePath1) {
-    const files = fs.readdirSync(obj.mtFilePath1)
-    files.forEach(file => {
-      const filePath = path.join(obj.mtFilePath1, file)
-      const stats = fs.statSync(filePath)
-      if(stats.isFile) {
-        readFile(filePath, file)
-      }
+  if (isFirstRun) {
+    task = schedule.scheduleJob('59 59 23 * * *', () => {
+      genMachineTimeFileTask(obj)
     })
+    isFirstRun = false
   }
+  genMachineTimeFileTask(obj)
+}
+
+function genMachineTimeFileTask(obj) {
+  if (obj.mtFilePath1) {
+    readFile(obj.mtFilePath1)
+  }
+  if (obj.mtFilePath2) {
+    readFile(obj.mtFilePath2)
+  }
+}
+
+function readFile(dirPath) {
+  const files = fs.readdirSync(dirPath)
+  files.forEach(file => {
+    const completePath = path.join(dirPath, file)
+    const stats = fs.statSync(completePath)
+    if (stats.isFile && file.includes('MachineReport')) {
+      win.send('mtCurrentProcessFile', file)
+      handleMachieReport(completePath, file)
+    } else if(stats.isFile && file.includes('AlarmReport')) {
+      win.send('wrCurrentProcessFile', file)
+      handleAlarmReport(completePath, file)
+    }
+  })
 }
 
 let machineReportExcelData = _.cloneDeep(originMachineReportExcelData)
 
-function readFile(path, file) {
-  if (file.includes('MachineReport')) {
-    handleMachieReport(path, file)
-  } else if (file.includes('AlarmReport')) {
-    handleAlarmReport(path, file)
-  }
-}
-
-
 function handleMachieReport(path, file) {
   const arrary = file.split('_')
   const formatTime = `${arrary[2]}/${arrary[3]}/${arrary[4]} ${arrary[5]}:${arrary[6]}`
-  machineReportExcelData[0].data.push([formatTime])
+  machineReportExcelData[0].data[1].push(formatTime)
   machineReportExcelData[0].data[1].push(arrary[1])
 
   const rl = readline.createInterface({
     input: fs.createReadStream(path),
     output: process.stdout,
-    terminal: false
+    terminal: false,
   })
   let isFirstLine = true
   let sumDieBonded = 0
-  let idleTimeArray = [], upTimeArray = [], runTimeArray= [], downTimeArray = [], alarmTimeArray = []
+  let idleTimeArray = [], upTimeArray = [], runTimeArray = [], downTimeArray = [], alarmTimeArray = []
   rl.on('line', (line) => {
-    if(isFirstLine) {
+    if (isFirstLine) {
       isFirstLine = false
       return
     }
@@ -85,33 +79,37 @@ function handleMachieReport(path, file) {
   rl.on('close', () => {
     machineReportExcelData[0].data[1].push(sumDieBonded)
     machineReportExcelData[0].data[1].push(sumTime(idleTimeArray))
-    machineReportExcelData[0].data[1].push(sumTime(upTimeArray))
-    machineReportExcelData[0].data[1].push(sumTime(runTimeArray))
+    const upTime = sumTime(upTimeArray)
+    machineReportExcelData[0].data[1].push(upTime)
+    const runTime = sumTime(runTimeArray)
+    machineReportExcelData[0].data[1].push(runTime)
     machineReportExcelData[0].data[1].push(sumTime(downTimeArray))
     machineReportExcelData[0].data[1].push(sumTime(alarmTimeArray))
-    write2Excel(machineReportExcelData)
+    const daliyCapacity = Math.round((sumDieBonded * 24) / 1000)
+    machineReportExcelData[0].data[1].push(daliyCapacity + 'K')
+    const achineUtilization =
+      (getTotalSeconds(runTime) / getTotalSeconds(upTime)) * 100
+    machineReportExcelData[0].data[1].push(achineUtilization.toFixed(2) + '%')
+    write2Excel(filePathObj, machineReportExcelData)
     isFirstLine = true
     machineReportExcelData = _.cloneDeep(originMachineReportExcelData)
     sumDieBonded = idleTimeArray.length = upTimeArray.length = downTimeArray.length = alarmTimeArray.length = 0
+    win.send('mtCurrentProcessFile', '')
   })
 }
 
 function sumTime(times) {
   let totalSeconds = 0
-
   // 遍历时间数组，将每个时间转换为秒数并累加
-  times.forEach(time => {
+  times.forEach((time) => {
     totalSeconds = getTotalSeconds(time)
   })
-
   // 计算总的小时、分钟、秒数
   const hours = Math.floor(totalSeconds / 3600)
   const minutes = Math.floor((totalSeconds % 3600) / 60)
   const seconds = totalSeconds % 60
-
   // 格式化时间字符串
   const formattedTime = `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
-  
   return formattedTime
 }
 
@@ -122,29 +120,21 @@ function getTotalSeconds(time) {
   return totalSeconds
 }
 
-
 function handleAlarmReport(path, file) {
   const rl = readline.createInterface({
     input: fs.createReadStream(path),
     output: process.stdout,
-    terminal: false
+    terminal: false,
   })
+  let isFirstLine = true
   rl.on('line', (line) => {
+    if(isFirstLine) {
+      isFirstLine = false
+      return
+    }
+    const array = line.split(',')
     
   })
 }
 
-function write2Excel(data) {
-  let path = filePathObj.mtOutputPath ? filePathObj.mtOutputPath : filePathObj.mtFilePath1
-  path += `\\MachineTime_test.xlsx`
-  const buffer = xlsx.build(data)
-  fs.writeFile(path, buffer, function (err) {
-    if (err) {
-      console.log(err, '导出excel失败')
-    } else {
-      console.log('导出excel成功!')
-    }
-  })
-}
-
-module.exports = service
+module.exports = runGenMachineTimeFileTask
