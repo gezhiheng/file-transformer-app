@@ -38,6 +38,14 @@ mtStartBtn.addEventListener('click', async () => {
     mtFilePath1,
     mtFilePath2,
     mtBackupPath,
-    mtOutputPath
+    mtOutputPath,
   })
+})
+
+window.api.receive('mtCurrentProcessFile', (currentProcessFile) => {
+  document.getElementById('mt-current-process-file').innerText = currentProcessFile
+})
+
+window.api.receive('wrCurrentProcessFile', (currentProcessFile) => {
+  document.getElementById('wr-current-process-file').innerText = currentProcessFile
 })

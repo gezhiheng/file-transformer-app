@@ -7,42 +7,51 @@
       content="default-src 'self'; script-src 'self'"
     />
     <title>File Transformer</title>
-    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
-    <img src="./assets/lumitek.jpg" alt="lumitek">
+    <img src="./assets/lumitek.jpg" alt="lumitek" />
     <div class="container">
       <div class="form">
-        <div class="title">File Transformer,<br><span>Machine Time</span></div>
+        <div class="title">
+          File Transformer,<br /><span>Machine Time</span>
+        </div>
         <button class="btn-input" id="mt-file-btn1">選擇轉換文件路徑 1</button>
         <button class="btn-input" id="mt-file-btn2">選擇轉換文件路徑 2</button>
         <button class="btn-input" id="mt-backup-btn">選擇文件備份路徑</button>
         <button class="btn-input" id="mt-output-btn">選擇文件輸出路徑</button>
         <span class="info">
-          當前處理的文件: 
-          <span id="mt-current-process-file">fdsfdsa.txt</span>
+          當前處理的文件:
+          <span id="mt-current-process-file"></span>
         </span>
         <div class="btn-group">
-          <button class="button-confirm" id="mt-start-btn">開始</button>
-          <button class="button-confirm" id="mt-cancel-btn">取消</button>
-          <button class="button-confirm" id="mt-save-btn" disabled>保存</button>
+          <button class="btn-confirm" id="mt-start-btn">開始</button>
+          <button class="btn-confirm" id="mt-cancel-btn">取消</button>
+          <button class="btn-confirm" id="mt-save-btn" disabled>
+            保存路徑
+          </button>
         </div>
       </div>
       <div class="form">
-        <div class="title">File Transformer,<br><span>Wafer Report</span></div>
+        <div class="title">
+          File Transformer,<br /><span>Wafer Report</span>
+        </div>
         <button class="btn-input">選擇轉換文件路徑</button>
         <button class="btn-input">選擇文件備份路徑</button>
         <button class="btn-input">選擇文件輸出路徑</button>
         <span class="info">
-          當前處理的文件: 
-          <span id="current-process-file">sdfd嘿嘿safsd214哈哈哈fdsfdsa.txt</span>
+          當前處理的文件:
+          <span id="wr-current-process-file"></span>
         </span>
         <div class="btn-group">
-          <button class="button-confirm">開始</button>
-          <button class="button-confirm">取消</button>
-          <button class="button-confirm">保存</button>
+          <button class="btn-confirm">開始</button>
+          <button class="btn-confirm">取消</button>
+          <button class="btn-confirm">保存路徑</button>
         </div>
       </div>
+    </div>
+    <div class="footer">
+      <span>Copyright © 2024 琉明光電（常州）</span>
     </div>
   </body>
   <script src="../scripts/renderer.js"></script>

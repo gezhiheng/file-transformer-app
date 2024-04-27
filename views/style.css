@@ -75,12 +75,13 @@ html {
   cursor: pointer;
 }
 
-.button-confirm:active, .btn-input:active {
+.btn-confirm:active,
+.btn-input:active {
   box-shadow: 0px 0px var(--main-color);
   transform: translate(3px, 3px);
 }
 
-.button-confirm {
+.btn-confirm {
   -webkit-app-region: no-drag;
   margin-right: 6px;
   width: 120px;
@@ -95,14 +96,14 @@ html {
   cursor: pointer;
 }
 
-button:disabled {
+.btn-confirm:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
 img {
   width: 200px;
-  margin: 0 0 6px 8px;
+  margin: 6px 0 6px 8px;
 }
 
 .info {
@@ -114,4 +115,13 @@ img {
   padding: 15px 0;
   font-size: 18px;
   color: #000000;
+}
+
+.footer {
+  position: fixed;
+  bottom: 6px;
+  width: 100%;
+  font-size: 12px;
+  opacity: 0.3;
+  text-align: center;
 }
