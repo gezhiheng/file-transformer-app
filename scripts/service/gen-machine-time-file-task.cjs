@@ -15,39 +15,59 @@ async function runGenMachineTimeFileTask(event, obj, mainWindow) {
   win = mainWindow
   filePathObj = obj
   if (isFirstRun) {
-    task = schedule.scheduleJob('59 59 23 * * *', () => {
-      genMachineTimeFileTask(obj)
+    task = schedule.scheduleJob('1 0 * * *', () => {
+      genMachineTimeFileTask(obj, getYesterdayDate())
     })
     isFirstRun = false
   }
-  genMachineTimeFileTask(obj)
+  genMachineTimeFileTask(obj, getCurrentDate())
 }
 
-function genMachineTimeFileTask(obj) {
+function getCurrentDate() {
+  const today = new Date()
+  const year = today.getFullYear()
+  const month = String(today.getMonth() + 1).padStart(2, '0')
+  const day = String(today.getDate()).padStart(2, '0') // 补齐前导零
+  return `${year}_${month}_${day}`
+}
+
+function getYesterdayDate() {
+  const today = new Date()
+  const yesterday = new Date(today)
+  yesterday.setDate(today.getDate() - 1)
+  const year = yesterday.getFullYear()
+  const month = String(yesterday.getMonth() + 1).padStart(2, '0')
+  const day = String(yesterday.getDate()).padStart(2, '0') // 补齐前导零
+  return `${year}_${month}_${day}`
+}
+
+let machineReportExcelData
+
+function genMachineTimeFileTask(obj, executionDate) {
+  machineReportExcelData = _.cloneDeep(originMachineReportExcelData)
   if (obj.mtFilePath1) {
     readFile(obj.mtFilePath1)
   }
   if (obj.mtFilePath2) {
     readFile(obj.mtFilePath2)
   }
+  // TODO 两个文件都读完再写入Excel
 }
 
-function readFile(dirPath) {
+function readFile(dirPath, executionDate) {
   const files = fs.readdirSync(dirPath)
-  files.forEach(file => {
+  files.forEach((file) => {
     const completePath = path.join(dirPath, file)
     const stats = fs.statSync(completePath)
-    if (stats.isFile && file.includes('MachineReport')) {
+    if (stats.isFile && file.includes(executionDate) && file.includes('MachineReport')) {
       win.send('mtCurrentProcessFile', file)
       handleMachieReport(completePath, file)
-    } else if(stats.isFile && file.includes('AlarmReport')) {
+    } else if (stats.isFile && file.includes(executionDate) && file.includes('AlarmReport')) {
       win.send('wrCurrentProcessFile', file)
       handleAlarmReport(completePath, file)
     }
   })
 }
-
-let machineReportExcelData = _.cloneDeep(originMachineReportExcelData)
 
 function handleMachieReport(path, file) {
   const arrary = file.split('_')
@@ -92,7 +112,6 @@ function handleMachieReport(path, file) {
     machineReportExcelData[0].data[1].push(achineUtilization.toFixed(2) + '%')
     write2Excel(filePathObj, machineReportExcelData)
     isFirstLine = true
-    machineReportExcelData = _.cloneDeep(originMachineReportExcelData)
     sumDieBonded = idleTimeArray.length = upTimeArray.length = downTimeArray.length = alarmTimeArray.length = 0
     win.send('mtCurrentProcessFile', '')
   })
@@ -128,12 +147,11 @@ function handleAlarmReport(path, file) {
   })
   let isFirstLine = true
   rl.on('line', (line) => {
-    if(isFirstLine) {
+    if (isFirstLine) {
       isFirstLine = false
       return
     }
     const array = line.split(',')
-    
   })
 }
 
