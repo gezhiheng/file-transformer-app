@@ -3,55 +3,80 @@ const path = require('path')
 const readline = require('readline')
 const schedule = require('node-schedule')
 const _ = require('lodash')
-const { originMachineReportExcelData } = require('./constants.cjs')
+const jschardet = require('jschardet')
+const iconv = require('iconv-lite')
+const { originMachineTimeExcelData } = require('./constants.cjs')
+const { getYesterdayDate } = require('./utils.cjs')
 const write2Excel = require('./write2excel.cjs')
 
 let filePathObj
 let task
 let isFirstRun = true
 let win
+let excelDate
 
 async function runGenMachineTimeFileTask(event, obj, mainWindow) {
   win = mainWindow
   filePathObj = obj
   if (isFirstRun) {
     task = schedule.scheduleJob('1 0 * * *', () => {
-      genMachineTimeFileTask(obj, getYesterdayDate())
+      excelDate = getYesterdayDate('_')
+      genMachineTimeFileTask(obj, excelDate)
     })
     isFirstRun = false
   }
-  genMachineTimeFileTask(obj, getCurrentDate())
+  excelDate = getYesterdayDate('_')
+  genMachineTimeFileTask(obj, excelDate)
 }
 
-function getCurrentDate() {
-  const today = new Date()
-  const year = today.getFullYear()
-  const month = String(today.getMonth() + 1).padStart(2, '0')
-  const day = String(today.getDate()).padStart(2, '0') // 补齐前导零
-  return `${year}_${month}_${day}`
-}
+let machineTimeExcelData
 
-function getYesterdayDate() {
-  const today = new Date()
-  const yesterday = new Date(today)
-  yesterday.setDate(today.getDate() - 1)
-  const year = yesterday.getFullYear()
-  const month = String(yesterday.getMonth() + 1).padStart(2, '0')
-  const day = String(yesterday.getDate()).padStart(2, '0') // 补齐前导零
-  return `${year}_${month}_${day}`
+// 用来跟踪两个路径的文件处理是否完成
+const doubleCheck = {
+  _path1Done: false,
+  get path1Done() {
+    return this._path1Done
+  },
+  set path1Done(isDone) {
+    this._path1Done = isDone
+    if (this._path2Done && this._path1Done) {
+      write2Excel('mt', filePathObj, machineTimeExcelData, excelDate, win)
+      machineTimeExcelData = _.cloneDeep(originMachineTimeExcelData)
+      this._path1Done = false
+      this._path2Done = false
+    }
+  },
+  _path2Done: false,
+  get path2Done() {
+    return this._path2Done
+  },
+  set path2Done(isDone) {
+    this._path2Done = isDone
+    if (this._path2Done && this._path1Done) {
+      write2Excel('mt', filePathObj, machineTimeExcelData, excelDate, win)
+      machineTimeExcelData = _.cloneDeep(originMachineTimeExcelData)
+      this._path1Done = false
+      this._path2Done = false
+    }
+  },
 }
-
-let machineReportExcelData
 
 function genMachineTimeFileTask(obj, executionDate) {
-  machineReportExcelData = _.cloneDeep(originMachineReportExcelData)
-  if (obj.mtFilePath1) {
-    readFile(obj.mtFilePath1)
+  machineTimeExcelData = _.cloneDeep(originMachineTimeExcelData)
+  const mtFilePath1 = obj.mtFilePath1
+  const mtFilePath2 = obj.mtFilePath2
+  if (mtFilePath1 === undefined) {
+    doubleCheck.path1Done = true
   }
-  if (obj.mtFilePath2) {
-    readFile(obj.mtFilePath2)
+  if (mtFilePath2 === undefined) {
+    doubleCheck.path2Done = true
   }
-  // TODO 两个文件都读完再写入Excel
+  if (mtFilePath1) {
+    readFile(mtFilePath1, executionDate)
+  }
+  if (mtFilePath2) {
+    readFile(mtFilePath2, executionDate)
+  }
 }
 
 function readFile(dirPath, executionDate) {
@@ -59,21 +84,29 @@ function readFile(dirPath, executionDate) {
   files.forEach((file) => {
     const completePath = path.join(dirPath, file)
     const stats = fs.statSync(completePath)
-    if (stats.isFile && file.includes(executionDate) && file.includes('MachineReport')) {
+    if (
+      stats.isFile &&
+      file.includes(executionDate) &&
+      file.includes('MachineReport')
+    ) {
       win.send('mtCurrentProcessFile', file)
       handleMachieReport(completePath, file)
-    } else if (stats.isFile && file.includes(executionDate) && file.includes('AlarmReport')) {
-      win.send('wrCurrentProcessFile', file)
+    } else if (
+      stats.isFile &&
+      file.includes(executionDate) &&
+      file.includes('AlarmReport')
+    ) {
+      win.send('mtCurrentProcessFile', file)
       handleAlarmReport(completePath, file)
     }
   })
 }
 
-function handleMachieReport(path, file) {
-  const arrary = file.split('_')
+function handleMachieReport(path, fileName) {
+  const arrary = fileName.split('_')
   const formatTime = `${arrary[2]}/${arrary[3]}/${arrary[4]} ${arrary[5]}:${arrary[6]}`
-  machineReportExcelData[0].data[1].push(formatTime)
-  machineReportExcelData[0].data[1].push(arrary[1])
+  machineTimeExcelData[0].data[1].push(formatTime)
+  machineTimeExcelData[0].data[1].push(arrary[1])
 
   const rl = readline.createInterface({
     input: fs.createReadStream(path),
@@ -82,7 +115,11 @@ function handleMachieReport(path, file) {
   })
   let isFirstLine = true
   let sumDieBonded = 0
-  let idleTimeArray = [], upTimeArray = [], runTimeArray = [], downTimeArray = [], alarmTimeArray = []
+  let idleTimeArray = [],
+    upTimeArray = [],
+    runTimeArray = [],
+    downTimeArray = [],
+    alarmTimeArray = []
   rl.on('line', (line) => {
     if (isFirstLine) {
       isFirstLine = false
@@ -97,22 +134,27 @@ function handleMachieReport(path, file) {
     alarmTimeArray.push(tmpArray[7])
   })
   rl.on('close', () => {
-    machineReportExcelData[0].data[1].push(sumDieBonded)
-    machineReportExcelData[0].data[1].push(sumTime(idleTimeArray))
+    machineTimeExcelData[0].data[1].push(sumDieBonded)
+    machineTimeExcelData[0].data[1].push(sumTime(idleTimeArray))
     const upTime = sumTime(upTimeArray)
-    machineReportExcelData[0].data[1].push(upTime)
+    machineTimeExcelData[0].data[1].push(upTime)
     const runTime = sumTime(runTimeArray)
-    machineReportExcelData[0].data[1].push(runTime)
-    machineReportExcelData[0].data[1].push(sumTime(downTimeArray))
-    machineReportExcelData[0].data[1].push(sumTime(alarmTimeArray))
+    machineTimeExcelData[0].data[1].push(runTime)
+    machineTimeExcelData[0].data[1].push(sumTime(downTimeArray))
+    machineTimeExcelData[0].data[1].push(sumTime(alarmTimeArray))
     const daliyCapacity = Math.round((sumDieBonded * 24) / 1000)
-    machineReportExcelData[0].data[1].push(daliyCapacity + 'K')
+    machineTimeExcelData[0].data[1].push(daliyCapacity + 'K')
     const achineUtilization =
       (getTotalSeconds(runTime) / getTotalSeconds(upTime)) * 100
-    machineReportExcelData[0].data[1].push(achineUtilization.toFixed(2) + '%')
-    write2Excel(filePathObj, machineReportExcelData)
+    machineTimeExcelData[0].data[1].push(achineUtilization.toFixed(2) + '%')
+    doubleCheck.path1Done = true
     isFirstLine = true
-    sumDieBonded = idleTimeArray.length = upTimeArray.length = downTimeArray.length = alarmTimeArray.length = 0
+    sumDieBonded =
+      idleTimeArray.length =
+      upTimeArray.length =
+      downTimeArray.length =
+      alarmTimeArray.length =
+        0
     win.send('mtCurrentProcessFile', '')
   })
 }
@@ -139,9 +181,13 @@ function getTotalSeconds(time) {
   return totalSeconds
 }
 
-function handleAlarmReport(path, file) {
+function handleAlarmReport(path, fileName) {
+  // 获取文件编码
+  const binary = fs.readFileSync(path, { encoding: 'binary' })
+  const txt = jschardet.detect(binary)
+  // 创建文件流逐行读取
   const rl = readline.createInterface({
-    input: fs.createReadStream(path),
+    input: fs.createReadStream(path).pipe(iconv.decodeStream(txt.encoding)),
     output: process.stdout,
     terminal: false,
   })
@@ -152,6 +198,12 @@ function handleAlarmReport(path, file) {
       return
     }
     const array = line.split(',')
+    machineTimeExcelData[0].data.push(array)
+  })
+  rl.on('close', () => {
+    doubleCheck.path2Done = true
+    isFirstLine = true
+    win.send('wrCurrentProcessFile', '')
   })
 }
 

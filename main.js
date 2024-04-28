@@ -1,13 +1,15 @@
-const { app, BrowserWindow } = require('electron/main')
+const { app, BrowserWindow, nativeImage, Tray } = require('electron/main')
 const path = require('node:path')
 const service = require('./scripts/service')
 
 let mainWindow
 
 const createWindow = () => {
+  const appIcon = nativeImage.createFromPath('./icon.png')
   mainWindow = new BrowserWindow({
+    icon: appIcon,
     width: 1500,
-    height: 660,
+    height: 920,
     resizable: false,
     maximizable: false,
     titleBarStyle: 'hidden',
@@ -25,11 +27,14 @@ const createWindow = () => {
 }
 
 app.whenReady().then(() => {
+  const trayIcon = nativeImage.createFromPath('./icon.png')
+  const tray = new Tray(trayIcon)
+
   createWindow()
 
   service(mainWindow)
 
-  mainWindow.webContents.openDevTools({ mode: 'undocked' })
+  // mainWindow.webContents.openDevTools({ mode: 'undocked' })
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {

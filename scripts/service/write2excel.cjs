@@ -1,18 +1,28 @@
 const xlsx = require('node-xlsx')
 const fs = require('fs')
 
-function write2Excel(filePathObj, data) {
-  // TODO 导出文件名添加日期
-  let path = filePathObj.mtOutputPath
-    ? filePathObj.mtOutputPath
-    : filePathObj.mtFilePath1
-  path += `\\MachineTime_test.xlsx`
+function write2Excel(type, filePathObj, data, date = 'xxxx-xx-xx', win) {
+  // TODO 判断文件是否存在，存在的话文件名添加后缀
+  date = date.replace(/_/g, '')
+  let path
+  if (type === 'wr') {
+    path = filePathObj.wrOutputPath
+      ? filePathObj.wrOutputPath
+      : filePathObj.wrFilePath
+    path += `\\WaferReport_${date}.xlsx`
+  } else {
+    path = filePathObj.mtOutputPath
+      ? filePathObj.mtOutputPath
+      : filePathObj.mtFilePath1
+    path += `\\MachineTime_${date}.xlsx`
+  }
   const buffer = xlsx.build(data)
-  fs.writeFile(path, buffer, function (err) {
+  console.log('🚀 ~ path:', path)
+  fs.writeFile(path, buffer, 'utf-8', function (err) {
     if (err) {
-      console.log(err, '导出excel失败')
+      win.send('log', `出現錯誤：${err}；文件位置：${path}`)
     } else {
-      console.log('导出excel成功!')
+      win.send('log', `Excel寫入成功，文件位置：${path}`)
     }
   })
 }
