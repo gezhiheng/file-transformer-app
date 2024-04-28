@@ -13,8 +13,8 @@ for (let i in interfaces) {
 }
 
 function checkMac() {
-    const AUTHORIZATION_MAC_ADDRESS = 'c0:25:a5:97:b7:c'
-    return macAddress === AUTHORIZATION_MAC_ADDRESS
+  const AUTHORIZATION_MAC_ADDRESS = 'c0:25:a5:97:b7:c'
+  return macAddress === AUTHORIZATION_MAC_ADDRESS
 }
 
 module.exports = checkMac

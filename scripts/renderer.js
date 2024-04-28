@@ -86,11 +86,13 @@ window.api.receive('wrCurrentProcessFile', (currentProcessFile) => {
     currentProcessFile
 })
 
+const textarea = document.getElementById('log-textarea')
+
 window.api.receive('log', (log) => {
-  const textarea = document.getElementById('log-textarea')
   textarea.value = log + '\n' + textarea.value
 })
 
-window.api.receive('no-authorization', () => {
-  alert('當前MAC地址沒有授權！')
+window.api.receive('no-authorization', (msg) => {
+  textarea.value = msg + '\n' + textarea.value
+  alert(msg)
 })

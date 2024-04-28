@@ -8,7 +8,12 @@ contextBridge.exposeInMainWorld('api', {
     }
   },
   receive: (channel, func) => {
-    let validChannels = ['mtCurrentProcessFile', 'wrCurrentProcessFile', 'log', 'no-authorization']
+    let validChannels = [
+      'mtCurrentProcessFile',
+      'wrCurrentProcessFile',
+      'log',
+      'no-authorization',
+    ]
     if (validChannels.includes(channel)) {
       ipcRenderer.on(channel, (event, ...args) => func(...args))
     }

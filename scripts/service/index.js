@@ -4,8 +4,10 @@ const runGenWaferReportFileTask = require('./gen-wafer-report-file-task.cjs')
 const checkMac = require('./check-mac.cjs')
 
 function service(mainWindow) {
-  // if(!checkMac()) {
-  //   mainWindow.send('no-authorization')
+  // if (!checkMac()) {
+  //   console.log('沒有授權')
+  //   console.log("🚀 ~ service ~ mainWindow:", mainWindow)
+  //   mainWindow.webContents.send('no-authorization', '當前MAC地址沒有授權！')
   //   return
   // }
   ipcMain.handle('dialog:openFile', handleFileOpen)
