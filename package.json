@@ -7,7 +7,8 @@
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
-    "make": "electron-forge make"
+    "make": "electron-forge make",
+    "electron:generate-icons": "electron-icon-builder --input=./public/icon.png --output=build --flatten"
   },
   "author": "henry.ge",
   "license": "ISC",
@@ -24,7 +25,10 @@
     "prettier": "3.2.5"
   },
   "dependencies": {
+    "electron-icon-builder": "^2.0.1",
     "electron-squirrel-startup": "^1.0.0",
+    "iconv-lite": "^0.6.3",
+    "jschardet": "^3.1.2",
     "lodash": "^4.17.21",
     "moment": "^2.30.1",
     "node-schedule": "^2.1.1",
