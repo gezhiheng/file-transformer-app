@@ -3,7 +3,7 @@ const path = require('path')
 const readline = require('readline')
 const schedule = require('node-schedule')
 const _ = require('lodash')
-const { getYesterdayDate } = require('./utils.cjs')
+const { getYesterdayDate, checkPathExists } = require('./utils.cjs')
 const { originWaferReportExcelData } = require('./constants.cjs')
 const write2Excel = require('./write2excel.cjs')
 
@@ -42,6 +42,10 @@ let pendingLength
 
 function readFile(dirPath, executionDate) {
   dirPath += `\\${excelDate}\\`
+  if (checkPathExists(dirPath) === 'not exists') {
+    win.send('log', `找不到該文件夾：${dirPath}`)
+    return
+  }
   const files = fs.readdirSync(dirPath)
   const pendingHandle = []
   let completePath

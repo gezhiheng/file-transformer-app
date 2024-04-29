@@ -123,3 +123,6 @@ window.api.receive('log', (log) => {
   textarea.value = log + '\n' + textarea.value
 })
 
+window.api.receive('no-authorization', () => {
+  alert('當前MAC地址沒有授權！')
+})

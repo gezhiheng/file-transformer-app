@@ -14,7 +14,7 @@ function write2Excel(type, filePathObj, data, date = 'xxxx-xx-xx', win) {
     path = filePathObj.mtOutputPath
       ? filePathObj.mtOutputPath
       : filePathObj.mtFilePath1
-    path += `\\MachineTime_${date}.xlsx`
+    path += `/MachineTime_${date}.xlsx`
   }
   const buffer = xlsx.build(data)
   console.log('🚀 ~ path:', path)

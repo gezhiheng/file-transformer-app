@@ -6,7 +6,7 @@ const _ = require('lodash')
 const jschardet = require('jschardet')
 const iconv = require('iconv-lite')
 const { originMachineTimeExcelData } = require('./constants.cjs')
-const { getYesterdayDate, getTodayDate } = require('./utils.cjs')
+const { getYesterdayDate, getTodayDate, checkPathExists } = require('./utils.cjs')
 const write2Excel = require('./write2excel.cjs')
 
 let filePathObj
@@ -83,6 +83,10 @@ function readFile(dirPath, executionDate) {
   const files = fs.readdirSync(dirPath)
   files.forEach((file) => {
     const completePath = path.join(dirPath, file)
+    if (checkPathExists(completePath) === 'not exists') {
+      win.send('log', `該路徑下找不到文件：${completePath}`)
+      return
+    }
     const stats = fs.statSync(completePath)
     if (
       stats.isFile &&
