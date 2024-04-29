@@ -9,6 +9,7 @@ const AUTHORIZATION_MAC_ADDRESSES = [
   '3C:6A:48:6B:23:0F',
   'C0:25:A5:97:B7:CE',
   'C0:25:A5:D3:1B:37',
+  'C0:25:A5:94:3F:2D',
 ]
 
 let interfaces = os.networkInterfaces()
@@ -23,14 +24,9 @@ for (let i in interfaces) {
   }
 }
 
-console.log(macAddress.toUpperCase())
-
 function checkMac() {
   // 检查mac地址是否匹配
-  if (AUTHORIZATION_MAC_ADDRESSES.indexOf(macAddress.toUpperCase()) === -1) {
-    return false
-  }
-  return true
+  return AUTHORIZATION_MAC_ADDRESSES.includes(macAddress.toUpperCase())
 }
 
 module.exports = checkMac
