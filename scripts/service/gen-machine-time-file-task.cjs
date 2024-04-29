@@ -6,7 +6,7 @@ const _ = require('lodash')
 const jschardet = require('jschardet')
 const iconv = require('iconv-lite')
 const { originMachineTimeExcelData } = require('./constants.cjs')
-const { getYesterdayDate } = require('./utils.cjs')
+const { getYesterdayDate, getTodayDate } = require('./utils.cjs')
 const write2Excel = require('./write2excel.cjs')
 
 let filePathObj
@@ -19,13 +19,13 @@ async function runGenMachineTimeFileTask(event, obj, mainWindow) {
   win = mainWindow
   filePathObj = obj
   if (isFirstRun) {
-    task = schedule.scheduleJob('1 0 * * *', () => {
-      excelDate = getYesterdayDate('_')
+    task = schedule.scheduleJob('5 0 * * *', () => {
+      excelDate = getTodayDate('_')
       genMachineTimeFileTask(obj, excelDate)
     })
     isFirstRun = false
   }
-  excelDate = getYesterdayDate('_')
+  excelDate = getTodayDate('_')
   genMachineTimeFileTask(obj, excelDate)
 }
 
@@ -40,7 +40,7 @@ const doubleCheck = {
   set path1Done(isDone) {
     this._path1Done = isDone
     if (this._path2Done && this._path1Done) {
-      write2Excel('mt', filePathObj, machineTimeExcelData, excelDate, win)
+      write2Excel('mt', filePathObj, machineTimeExcelData, getYesterdayDate(''), win)
       machineTimeExcelData = _.cloneDeep(originMachineTimeExcelData)
       this._path1Done = false
       this._path2Done = false
@@ -53,7 +53,7 @@ const doubleCheck = {
   set path2Done(isDone) {
     this._path2Done = isDone
     if (this._path2Done && this._path1Done) {
-      write2Excel('mt', filePathObj, machineTimeExcelData, excelDate, win)
+      write2Excel('mt', filePathObj, machineTimeExcelData, getYesterdayDate(''), win)
       machineTimeExcelData = _.cloneDeep(originMachineTimeExcelData)
       this._path1Done = false
       this._path2Done = false
@@ -163,7 +163,7 @@ function sumTime(times) {
   let totalSeconds = 0
   // 遍历时间数组，将每个时间转换为秒数并累加
   times.forEach((time) => {
-    totalSeconds = getTotalSeconds(time)
+    totalSeconds += getTotalSeconds(time)
   })
   // 计算总的小时、分钟、秒数
   const hours = Math.floor(totalSeconds / 3600)

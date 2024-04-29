@@ -16,7 +16,7 @@ async function runGenWaferReportFileTask(event, obj, mainWindow) {
   win = mainWindow
   filePathObj = obj
   if (isFirstRun) {
-    task = schedule.scheduleJob('1 0 * * *', () => {
+    task = schedule.scheduleJob('5 0 * * *', () => {
       excelDate = getYesterdayDate('_')
       genWaferReportFileTask(obj, excelDate)
     })

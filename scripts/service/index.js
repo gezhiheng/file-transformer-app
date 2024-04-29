@@ -4,10 +4,10 @@ const runGenWaferReportFileTask = require('./gen-wafer-report-file-task.cjs')
 const checkMac = require('./check-mac.cjs')
 
 function service(mainWindow) {
-  // if(!checkMac()) {
-  //   mainWindow.send('no-authorization')
-  //   return
-  // }
+  // TODO 
+  if(!checkMac()) {
+    return
+  }
   ipcMain.handle('dialog:openFile', handleFileOpen)
   ipcMain.on('genMachineTimeFileTask', (event, filePathObj) => {
     runGenMachineTimeFileTask(event, filePathObj, mainWindow)
