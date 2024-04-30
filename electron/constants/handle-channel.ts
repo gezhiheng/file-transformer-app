@@ -1,3 +1,3 @@
-const handleChannels: string[] = ['dialog:openFile']
+const handleChannels: string[] = ['dialog:openDirectory']
 
 export default handleChannels
