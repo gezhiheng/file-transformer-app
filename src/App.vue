@@ -109,7 +109,7 @@ const mt1BtnOnclick = async () => {}
 
 const fileOpen = async (btnText:string) => {
   console.log(globalThis)
-  const filePath = await window.api.handle('dialog:openFile')
+  const filePath = await window.api.handle('dialog:openDirectory')
 
 }
 </script>
