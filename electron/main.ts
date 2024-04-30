@@ -1,49 +1,50 @@
 import { app, BrowserWindow } from 'electron'
-import { fileURLToPath } from 'node:url'
-import path from 'node:path'
+import path from 'path'
+import service from './service'
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
+// Handle creating/removing shortcuts on Windows when installing/uninstalling.
+if (require('electron-squirrel-startup')) {
+  app.quit()
+}
 
-// The built directory structure
-//
-// ├─┬─┬ dist
-// │ │ └── index.html
-// │ │
-// │ ├─┬ dist-electron
-// │ │ ├── main.js
-// │ │ └── preload.mjs
-// │
-process.env.APP_ROOT = path.join(__dirname, '..')
+let mainWindow: BrowserWindow | null
 
-// 🚧 Use ['ENV_NAME'] avoid vite:define plugin - Vite@2.x
-export const VITE_DEV_SERVER_URL = process.env['VITE_DEV_SERVER_URL']
-export const MAIN_DIST = path.join(process.env.APP_ROOT, 'dist-electron')
-export const RENDERER_DIST = path.join(process.env.APP_ROOT, 'dist')
-
-process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, 'public') : RENDERER_DIST
-
-let win: BrowserWindow | null
-
-function createWindow() {
-  win = new BrowserWindow({
-    icon: path.join(process.env.VITE_PUBLIC, 'electron-vite.svg'),
+const createWindow = () => {
+  // Create the browser window.
+  mainWindow = new BrowserWindow({
+    width: 1500,
+    height: 930,
+    resizable: false,
+    maximizable: false,
+    titleBarStyle: 'hidden',
+    titleBarOverlay: {
+      color: '#fff',
+      symbolColor: '#323232',
+      height: 30,
+    },
     webPreferences: {
-      preload: path.join(__dirname, 'preload.mjs'),
+      preload: path.join(__dirname, 'preload.js'),
     },
   })
 
-  // Test active push message to Renderer-process.
-  win.webContents.on('did-finish-load', () => {
-    win?.webContents.send('main-process-message', (new Date).toLocaleString())
-  })
-
-  if (VITE_DEV_SERVER_URL) {
-    win.loadURL(VITE_DEV_SERVER_URL)
+  // and load the index.html of the app.
+  if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
+    mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL)
   } else {
-    // win.loadFile('dist/index.html')
-    win.loadFile(path.join(RENDERER_DIST, 'index.html'))
+    mainWindow.loadFile(
+      path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`),
+    )
   }
+
+  // Open the DevTools.
+  mainWindow.webContents.openDevTools({ mode: 'undocked' })
 }
+
+app.whenReady().then(() => {
+  createWindow()
+
+  service(mainWindow)
+})
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
@@ -51,7 +52,6 @@ function createWindow() {
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
-    win = null
   }
 })
 
@@ -63,4 +63,5 @@ app.on('activate', () => {
   }
 })
 
-app.whenReady().then(createWindow)
+// In this file you can include the rest of your app's specific main process
+// code. You can also put them in separate files and import them here.

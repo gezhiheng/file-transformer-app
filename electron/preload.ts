@@ -1,24 +1,26 @@
-import { ipcRenderer, contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
+import type { Event } from 'electron'
+import { sendChannels, receiveChannels, handleChannels } from './constants'
 
-// --------- Expose some API to the Renderer process ---------
-contextBridge.exposeInMainWorld('ipcRenderer', {
-  on(...args: Parameters<typeof ipcRenderer.on>) {
-    const [channel, listener] = args
-    return ipcRenderer.on(channel, (event, ...args) => listener(event, ...args))
-  },
-  off(...args: Parameters<typeof ipcRenderer.off>) {
-    const [channel, ...omit] = args
-    return ipcRenderer.off(channel, ...omit)
-  },
-  send(...args: Parameters<typeof ipcRenderer.send>) {
-    const [channel, ...omit] = args
-    return ipcRenderer.send(channel, ...omit)
-  },
-  invoke(...args: Parameters<typeof ipcRenderer.invoke>) {
-    const [channel, ...omit] = args
-    return ipcRenderer.invoke(channel, ...omit)
-  },
+type CallBackFn = (event: Event, ...args: any[]) => void
 
-  // You can expose other APTs you need here.
-  // ...
+contextBridge.exposeInMainWorld('api', {
+  send: (channel: string, data: any) => {
+    const validChannels = sendChannels
+    if (validChannels.includes(channel)) {
+      ipcRenderer.send(channel, data)
+    }
+  },
+  receive: (channel: string, func: CallBackFn) => {
+    const validChannels = receiveChannels
+    if (validChannels.includes(channel)) {
+      ipcRenderer.on(channel, (event, ...args) => func(event, ...args))
+    }
+  },
+  handle: (channel: string) => {
+    const validChannels = handleChannels
+    if (validChannels.includes(channel)) {
+      return ipcRenderer.invoke(channel)
+    }
+  },
 })
