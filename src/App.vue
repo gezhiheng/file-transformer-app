@@ -3,13 +3,13 @@
   <div class="container">
     <div class="form">
       <div class="title">File Transformer,<br /><span>Machine Time</span></div>
-      <button class="btn-input" id="mt-file-btn1" @click="fileOpen(mt1BtnText)">
+      <button class="btn-input" id="mt-file-btn1" @click="mt1BtnOnclick">
         {{ mt1BtnText }}
       </button>
-      <button class="btn-input" id="mt-file-btn2">
+      <button class="btn-input" id="mt-file-btn2" @click="mt2BtnOnclick">
         {{ mt2BtnText }}
       </button>
-      <button class="btn-input" id="mt-output-btn">
+      <button class="btn-input" id="mt-output-btn" @click="mtOutputBtnOnclick">
         {{ mtOutputBtnText }}
       </button>
       <span class="current-process-file">
@@ -22,10 +22,10 @@
     </div>
     <div class="form">
       <div class="title">File Transformer,<br /><span>Wafer Report</span></div>
-      <button class="btn-input" id="wr-file-btn">
+      <button class="btn-input" id="wr-file-btn" @click="wrBtnOnclick">
         {{ wrBtnText }}
       </button>
-      <button class="btn-input" id="wr-output-btn">
+      <button class="btn-input" id="wr-output-btn" @click="wrOutputBtnOnclick">
         {{ wrOutputBtnText }}
       </button>
       <span class="current-process-file">
@@ -105,12 +105,39 @@ const gridData = [
   },
 ]
 
-const mt1BtnOnclick = async () => {}
-
-const fileOpen = async (btnText:string) => {
-  console.log(globalThis)
+const mt1BtnOnclick = async () => {
   const filePath = await window.api.handle('dialog:openDirectory')
+  if (filePath) {
+    mt1BtnText.value = filePath
+  }
+}
 
+const mt2BtnOnclick = async () => {
+  const filePath = await window.api.handle('dialog:openDirectory')
+  if (filePath) {
+    mt2BtnText.value = filePath
+  }
+}
+
+const mtOutputBtnOnclick = async () => {
+  const filePath = await window.api.handle('dialog:openDirectory')
+  if (filePath) {
+    mtOutputBtnText.value = filePath
+  }
+}
+
+const wrBtnOnclick = async () => {
+  const filePath = await window.api.handle('dialog:openDirectory')
+  if (filePath) {
+    wrBtnText.value = filePath
+  }
+}
+
+const wrOutputBtnOnclick = async () => {
+  const filePath = await window.api.handle('dialog:openDirectory')
+  if (filePath) {
+    wrOutputBtnText.value = filePath
+  }
 }
 </script>
 
