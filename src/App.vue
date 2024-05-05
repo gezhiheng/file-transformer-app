@@ -17,7 +17,13 @@
         <span id="mt-current-process-file">{{ mtCurrentProcessFile }}</span>
       </span>
       <div class="btn-group">
-        <button class="btn-confirm" id="mt-start-btn" @click="dialogTableVisible = true">開始</button>
+        <button
+          class="btn-confirm"
+          id="mt-start-btn"
+          @click="dialogTableVisible = true"
+        >
+          開始
+        </button>
       </div>
     </div>
     <div class="form">
@@ -42,22 +48,33 @@
     <div class="title log-title">
       Log, <br /><span>History & Exception</span>
     </div>
-    <textarea id="log-textarea" readonly="true" cols="30" rows="10"></textarea>
+    <textarea id="log-textarea" readonly="true" cols="30" rows="10">{{
+      log
+    }}</textarea>
   </div>
   <div class="footer">
     <span>Copyright © 2024 琉明光電（常州）</span>
   </div>
-  <el-dialog v-model="dialogTableVisible" title="Shipping address" width="800">
-    <el-table :data="gridData">
-      <el-table-column property="date" label="Date" width="150" />
-      <el-table-column property="name" label="Name" width="200" />
-      <el-table-column property="address" label="Address" />
-    </el-table>
+  <el-dialog
+    v-model="dialogTableVisible"
+    title="請輸入授權碼"
+    width="350"
+    :close-on-click-modal="false"
+    :show-close="true"
+  >
+    <el-input
+      v-model="macAddress"
+      style="width: 240px; margin-right: 6px"
+    />
+    <el-button type="info" plain>確定</el-button>
   </el-dialog>
 </template>
 
 <script lang="ts" setup>
 import { ref, watch } from 'vue'
+
+const win: any = window
+win.api.send('rendererFinishLoad')
 
 const mt1BtnText = ref<string>('Machine Time 轉檔前路徑')
 const mt2BtnText = ref<string>('Alarm Report 轉檔前路徑')
@@ -68,77 +85,60 @@ const wrBtnText = ref<string>('Wafer Report 轉檔前路徑')
 const wrOutputBtnText = ref<string>('Wafer Report 轉檔後路徑')
 const wrCurrentProcessFile = ref<string>('')
 
+const log = ref<string>('')
+const macAddress = ref<string>('')
 const dialogTableVisible = ref<boolean>(false)
 
 watch(dialogTableVisible, (newValue, oldValue) => {
   if (newValue) {
-    document.querySelectorAll('*').forEach(item => {
+    document.querySelectorAll('*').forEach((item) => {
       item.classList.add('no-drag')
     })
   } else {
-    document.querySelectorAll('*').forEach(item => {
+    document.querySelectorAll('*').forEach((item) => {
       item.classList.remove('no-drag')
     })
   }
 })
 
-const gridData = [
-  {
-    date: '2016-05-02',
-    name: 'John Smith',
-    address: 'No.1518,  Jinshajiang Road, Putuo District',
-  },
-  {
-    date: '2016-05-04',
-    name: 'John Smith',
-    address: 'No.1518,  Jinshajiang Road, Putuo District',
-  },
-  {
-    date: '2016-05-01',
-    name: 'John Smith',
-    address: 'No.1518,  Jinshajiang Road, Putuo District',
-  },
-  {
-    date: '2016-05-03',
-    name: 'John Smith',
-    address: 'No.1518,  Jinshajiang Road, Putuo District',
-  },
-]
-
 const mt1BtnOnclick = async () => {
-  const filePath = await window.api.handle('dialog:openDirectory')
+  const filePath = await win.api.handle('dialog:openDirectory')
   if (filePath) {
     mt1BtnText.value = filePath
   }
 }
 
 const mt2BtnOnclick = async () => {
-  const filePath = await window.api.handle('dialog:openDirectory')
+  const filePath = await win.api.handle('dialog:openDirectory')
   if (filePath) {
     mt2BtnText.value = filePath
   }
 }
 
 const mtOutputBtnOnclick = async () => {
-  const filePath = await window.api.handle('dialog:openDirectory')
+  const filePath = await win.api.handle('dialog:openDirectory')
   if (filePath) {
     mtOutputBtnText.value = filePath
   }
 }
 
 const wrBtnOnclick = async () => {
-  const filePath = await window.api.handle('dialog:openDirectory')
+  const filePath = await win.api.handle('dialog:openDirectory')
   if (filePath) {
     wrBtnText.value = filePath
   }
 }
 
 const wrOutputBtnOnclick = async () => {
-  const filePath = await window.api.handle('dialog:openDirectory')
+  const filePath = await win.api.handle('dialog:openDirectory')
   if (filePath) {
     wrOutputBtnText.value = filePath
   }
 }
+
+win.api.receive('log', (data: string) => {
+  log.value = `${data}\n${log.value}`
+})
 </script>
 
 <style scoped>

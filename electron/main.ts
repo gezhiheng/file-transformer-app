@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, ipcMain } from 'electron'
 import path from 'path'
 import service from './service'
 
@@ -42,8 +42,12 @@ const createWindow = () => {
 
 app.whenReady().then(() => {
   createWindow()
-
-  service(mainWindow)
+  const appDataPath = app.getPath('userData')
+  console.log('🚀 ~ app.whenReady ~ appDataPath:', appDataPath)
+  // 渲染进程加载完后调用业务
+  ipcMain.on('rendererFinishLoad', () => {
+    service(mainWindow)
+  })
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common

@@ -10,8 +10,6 @@ function service(mainWindow: BrowserWindow) {
       return filePaths[0]
     }
   })
-
-
 }
 
 export default service

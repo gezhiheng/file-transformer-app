@@ -92,3 +92,7 @@ typings/
 out/
 
 fonts/
+
+dist-electron/
+
+dist/

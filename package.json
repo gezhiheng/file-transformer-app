@@ -1,6 +1,6 @@
 {
-  "name": "my-new-app",
-  "productName": "my-new-app",
+  "name": "file-transformer",
+  "productName": "File Transformer",
   "version": "1.0.0",
   "description": "My Electron application description",
   "main": ".vite/build/main.js",
