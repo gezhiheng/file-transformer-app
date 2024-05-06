@@ -1,7 +1,9 @@
 const md5 = require('md5')
 
-const mac = 'c0:25:a5:94:3f:2d'
+const mac = '3c:6a:48:6b:23:of'  // editor me!
 
-const data = md5(mac)
+const SALT = 'lumitek-file-transformer'
+
+const data = md5(mac + SALT)
 
 console.log('🚀 ~ data:', data)
