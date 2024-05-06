@@ -1,7 +1,8 @@
 const sendChannels: string[] = [
   'rendererFinishLoad',
   'task:genMachineTimeFile',
-  'task:genWaferReportFileTask',
+  'task:genWaferReportFile',
+  'authorizationCode',
 ]
 
 export default sendChannels

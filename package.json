@@ -1,7 +1,7 @@
 {
   "name": "file-transformer",
-  "productName": "File Transformer",
-  "version": "1.0.0",
+  "productName": "FileTransformer",
+  "version": "1.0.3",
   "description": "My Electron application description",
   "main": ".vite/build/main.js",
   "scripts": {
@@ -21,6 +21,8 @@
     "@electron-forge/plugin-fuses": "^7.4.0",
     "@electron-forge/plugin-vite": "^7.4.0",
     "@electron/fuses": "^1.8.0",
+    "@types/md5": "^2.3.5",
+    "@types/node-schedule": "^2.1.7",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
     "@vitejs/plugin-vue": "^5.0.4",
@@ -29,7 +31,8 @@
     "eslint-plugin-import": "^2.25.0",
     "ts-node": "^10.0.0",
     "typescript": "~4.5.4",
-    "vite": "^5.0.12"
+    "vite": "^5.0.12",
+    "vite-plugin-electron": "^0.28.7"
   },
   "keywords": [],
   "author": {
@@ -40,6 +43,12 @@
   "dependencies": {
     "electron-squirrel-startup": "^1.0.0",
     "element-plus": "^2.7.2",
+    "iconv-lite": "^0.6.3",
+    "jschardet": "^3.1.2",
+    "lodash": "^4.17.21",
+    "md5": "^2.3.0",
+    "node-schedule": "^2.1.1",
+    "node-xlsx": "^0.24.0",
     "vue": "^3.4.25"
   }
 }

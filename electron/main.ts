@@ -37,13 +37,13 @@ const createWindow = () => {
   }
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools({ mode: 'undocked' })
+  if (!app.isPackaged) {
+    mainWindow.webContents.openDevTools({ mode: 'undocked' })
+  }
 }
 
 app.whenReady().then(() => {
   createWindow()
-  const appDataPath = app.getPath('userData')
-  console.log('🚀 ~ app.whenReady ~ appDataPath:', appDataPath)
   // 渲染进程加载完后调用业务
   ipcMain.on('rendererFinishLoad', () => {
     service(mainWindow)

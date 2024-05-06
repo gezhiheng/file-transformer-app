@@ -20,7 +20,7 @@
         <button
           class="btn-confirm"
           id="mt-start-btn"
-          @click="dialogTableVisible = true"
+          @click="machineTimeBtnOnclick"
         >
           開始
         </button>
@@ -39,14 +39,22 @@
         <span id="wr-current-process-file">{{ wrCurrentProcessFile }}</span>
       </span>
       <div class="btn-group">
-        <button class="btn-confirm" id="wr-start-btn">開始</button>
+        <button
+          class="btn-confirm"
+          id="wr-start-btn"
+          @click="waferReportBtnOnclick"
+        >
+          開始
+        </button>
         <!-- <button class="btn-confirm" id="wr-save-btn">保存路徑</button> -->
       </div>
     </div>
   </div>
   <div class="form log">
     <div class="title log-title">
-      Log, <br /><span>History & Exception</span>
+      Log, <br /><span>History & Exception</span><br /><span
+        >MAC地址：{{ macAddress }}</span
+      >
     </div>
     <textarea id="log-textarea" readonly="true" cols="30" rows="10">{{
       log
@@ -63,10 +71,12 @@
     :show-close="true"
   >
     <el-input
-      v-model="macAddress"
+      v-model="authorizationCode"
       style="width: 240px; margin-right: 6px"
     />
-    <el-button type="info" plain>確定</el-button>
+    <el-button type="info" plain @click="authorizationCodeBtnOnclick"
+      >確定</el-button
+    >
   </el-dialog>
 </template>
 
@@ -86,8 +96,9 @@ const wrOutputBtnText = ref<string>('Wafer Report 轉檔後路徑')
 const wrCurrentProcessFile = ref<string>('')
 
 const log = ref<string>('')
-const macAddress = ref<string>('')
+const authorizationCode = ref<string>('')
 const dialogTableVisible = ref<boolean>(false)
+const macAddress = ref<string>('')
 
 watch(dialogTableVisible, (newValue, oldValue) => {
   if (newValue) {
@@ -137,8 +148,70 @@ const wrOutputBtnOnclick = async () => {
 }
 
 win.api.receive('log', (data: string) => {
+  if (data === '當前MAC地址沒有授權') {
+    dialogTableVisible.value = true
+  }
   log.value = `${data}\n${log.value}`
 })
+
+win.api.receive('macAddress', (data: string) => {
+  macAddress.value = data
+})
+
+win.api.receive('mtCurrentProcessFile', (data: string) => {
+  mtCurrentProcessFile.value = data
+})
+
+win.api.receive('wrCurrentProcessFile', (data: string) => {
+  wrCurrentProcessFile.value = data
+})
+
+win.api.receive('config:authorizationCode', (flag: boolean) => {
+  dialogTableVisible.value = false
+  if (flag) {
+    alert('授權配置寫入成功，請重啓應用')
+  } else {
+    alert('錯誤：授權配置寫入失敗，請聯係開發人員！')
+  }
+})
+
+const machineTimeBtnOnclick = () => {
+  if (
+    mt1BtnText.value === 'Machine Time 轉檔前路徑' ||
+    mt2BtnText.value === 'Alarm Report 轉檔前路徑' ||
+    mtOutputBtnText.value === 'Machine Time 轉檔后路徑'
+  ) {
+    alert('Machine Time 請补充轉換文件路徑')
+    return
+  }
+  win.api.send('task:genMachineTimeFile', {
+    mtFilePath1: mt1BtnText.value,
+    mtFilePath2: mt2BtnText.value,
+    mtOutputPath: mtOutputBtnText.value,
+  })
+}
+
+const waferReportBtnOnclick = () => {
+  if (
+    wrBtnText.value === 'Wafer Report 轉檔前路徑' ||
+    wrOutputBtnText.value === 'Wafer Report 轉檔後路徑'
+  ) {
+    alert('Wafer Report 請补充轉換文件路徑')
+    return
+  }
+  win.api.send('task:genWaferReportFile', {
+    wrFilePath: wrBtnText.value,
+    wrOutputPath: wrOutputBtnText.value,
+  })
+}
+
+const authorizationCodeBtnOnclick = () => {
+  if (authorizationCode.value === '') {
+    alert('授權碼不能為空')
+    return
+  }
+  win.api.send('authorizationCode', authorizationCode.value)
+}
 </script>
 
 <style scoped>
