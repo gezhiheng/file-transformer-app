@@ -86,13 +86,19 @@ import { ref, watch } from 'vue'
 const win: any = window
 win.api.send('rendererFinishLoad')
 
-const mt1BtnText = ref<string>('Machine Time 轉檔前路徑')
-const mt2BtnText = ref<string>('Alarm Report 轉檔前路徑')
-const mtOutputBtnText = ref<string>('Machine Time 轉檔后路徑')
+const originMT1BtnText = 'Machine Time 轉檔前路徑'
+const originMT2BtnText = 'Alarm Report 轉檔前路徑'
+const originMTOutputBtnText = 'Machine Time 轉檔後路徑'
+const originWRBtnText = 'Wafer Report 轉檔前路徑'
+const originWROutputBtnText = 'Wafer Report 轉檔後路徑'
+
+const mt1BtnText = ref<string>(originMT1BtnText)
+const mt2BtnText = ref<string>(originMT2BtnText)
+const mtOutputBtnText = ref<string>(originMTOutputBtnText)
 const mtCurrentProcessFile = ref<string>('')
 
-const wrBtnText = ref<string>('Wafer Report 轉檔前路徑')
-const wrOutputBtnText = ref<string>('Wafer Report 轉檔後路徑')
+const wrBtnText = ref<string>(originWRBtnText)
+const wrOutputBtnText = ref<string>(originWROutputBtnText)
 const wrCurrentProcessFile = ref<string>('')
 
 const log = ref<string>('')
@@ -177,9 +183,9 @@ win.api.receive('config:authorizationCode', (flag: boolean) => {
 
 const machineTimeBtnOnclick = () => {
   if (
-    mt1BtnText.value === 'Machine Time 轉檔前路徑' ||
-    mt2BtnText.value === 'Alarm Report 轉檔前路徑' ||
-    mtOutputBtnText.value === 'Machine Time 轉檔后路徑'
+    mt1BtnText.value === originMT1BtnText ||
+    mt2BtnText.value === originMT2BtnText ||
+    mtOutputBtnText.value === originMTOutputBtnText
   ) {
     alert('Machine Time 請补充轉換文件路徑')
     return
@@ -193,8 +199,8 @@ const machineTimeBtnOnclick = () => {
 
 const waferReportBtnOnclick = () => {
   if (
-    wrBtnText.value === 'Wafer Report 轉檔前路徑' ||
-    wrOutputBtnText.value === 'Wafer Report 轉檔後路徑'
+    wrBtnText.value === originWRBtnText ||
+    wrOutputBtnText.value === originWROutputBtnText
   ) {
     alert('Wafer Report 請补充轉換文件路徑')
     return
