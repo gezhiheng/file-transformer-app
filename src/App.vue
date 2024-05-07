@@ -175,9 +175,9 @@ win.api.receive('wrCurrentProcessFile', (data: string) => {
 win.api.receive('config:authorizationCode', (flag: boolean) => {
   dialogTableVisible.value = false
   if (flag) {
-    alert('授權配置寫入成功，請重啓應用')
+    alert('授權成功!')
   } else {
-    alert('錯誤：授權配置寫入失敗，請聯係開發人員！')
+    alert('錯誤：授權失敗，請聯係開發人員！')
   }
 })
 

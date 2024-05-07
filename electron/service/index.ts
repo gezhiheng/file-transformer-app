@@ -42,10 +42,13 @@ function service(mainWindow: BrowserWindow) {
   })
 
   ipcMain.on('authorizationCode', (event, authorizationCode) => {
-    let flag
+    let flag = false
     try {
       write2config(authorizationCode)
-      flag = true
+      if (checkAuthorization()) {
+        isAuthorization = true
+        flag = true
+      }
     } catch (error) {
       flag = false
     }
