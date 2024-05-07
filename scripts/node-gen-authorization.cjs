@@ -1,6 +1,6 @@
 const md5 = require('md5')
 
-const mac = '3c:6a:48:6b:23:of'  // editor me!
+const mac = '3c:6a:48:6b:23:of'  // edit me!
 
 const SALT = 'lumitek-file-transformer'
 
