@@ -1,16 +1,28 @@
 import { app } from 'electron'
-import { writeFileSync } from 'fs'
+import { existsSync, readFileSync, writeFileSync } from 'fs'
+import { join } from 'path'
 
-const isPackaged = app.isPackaged
+function write2config(config: Config) {
+  const isPackaged = app.isPackaged
+  const sourceConfigPath = isPackaged
+    ? join(process.resourcesPath, 'config.json')
+    : join('config', 'config.json')
 
-function write2config(authorizationCode: string) {
-  const config = {
-    authorization: authorizationCode,
+  let success = true
+  try {
+    let configResult: Config = {}
+    if (existsSync(sourceConfigPath)) {
+      const configData = readFileSync(sourceConfigPath, 'utf-8')
+      configResult = JSON.parse(configData)
+    }
+    // 直接覆盖相同属性名的配置项
+    Object.assign(configResult, config)
+    writeFileSync(sourceConfigPath, JSON.stringify(configResult, null, 2))
+  } catch (error) {
+    success = false
   }
-  const configPath = isPackaged
-    ? `${process.resourcesPath}\\config.json`
-    : 'config\\config.json'
-  writeFileSync(configPath, JSON.stringify(config))
+
+  return success
 }
 
 export default write2config

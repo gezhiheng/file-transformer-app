@@ -1,8 +1,8 @@
 const receiveChannels: string[] = [
+  'init',
   'mtCurrentProcessFile',
   'wrCurrentProcessFile',
   'log',
-  'macAddress',
   'mtCurrentProcessFile',
   'wrCurrentProcessFile',
   'config:authorizationCode',

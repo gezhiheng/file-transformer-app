@@ -15,7 +15,6 @@ let task
 async function runGenWaferReportFileTask(event, obj, mainWindow) {
   win = mainWindow
   filePathObj = obj
-  win.send('log', '開始執行 Wafer Report 檔案生成')
   if (isFirstRun) {
     task = scheduleJob('5 0 * * *', () => {
       excelDate = getYesterdayDate('_')

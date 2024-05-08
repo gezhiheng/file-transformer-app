@@ -16,10 +16,10 @@ contextBridge.exposeInMainWorld('api', {
       ipcRenderer.on(channel, (event, ...args) => func(...args))
     }
   },
-  handle: (channel: string) => {
+  handle: (channel: string, data: unknown) => {
     const validChannels = handleChannels
     if (validChannels.includes(channel)) {
-      return ipcRenderer.invoke(channel)
+      return ipcRenderer.invoke(channel, data)
     }
   },
 })

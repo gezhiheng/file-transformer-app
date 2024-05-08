@@ -96,3 +96,5 @@ fonts/
 dist-electron/
 
 dist/
+
+*.txt

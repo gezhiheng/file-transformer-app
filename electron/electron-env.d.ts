@@ -25,3 +25,17 @@ declare namespace NodeJS {
 interface Window {
   ipcRenderer: import('electron').IpcRenderer
 }
+
+interface Config {
+  authorization?: string
+  machineTimePath?: string
+  alarmReportPath?: string
+  machineTimeOutputPath?: string
+  waferReportPath?: string
+  waferReportOutputPath?: string
+}
+
+interface InitData {
+  config: Config
+  macAddress: string
+}
