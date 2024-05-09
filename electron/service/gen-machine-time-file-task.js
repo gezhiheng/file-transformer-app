@@ -22,6 +22,7 @@ let excelDate
 async function runGenMachineTimeFileTask(event, obj, mainWindow) {
   win = mainWindow
   filePathObj = obj
+  window.webContents.send('log', 'MachineTime定時任務啓動')
   if (isFirstRun) {
     task = scheduleJob('5 0 * * *', () => {
       excelDate = getTodayDate('_')
