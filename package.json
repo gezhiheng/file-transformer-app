@@ -1,7 +1,7 @@
 {
   "name": "file-transformer",
   "productName": "FileTransformer",
-  "version": "1.0.3",
+  "version": "1.2.0",
   "description": "My Electron application description",
   "main": ".vite/build/main.js",
   "scripts": {

@@ -3,15 +3,24 @@
   <div class="container">
     <div class="form">
       <div class="title">File Transformer,<br /><span>Machine Time</span></div>
-      <button class="btn-input" id="mt-file-btn1" @click="mt1BtnOnclick">
-        {{ mt1BtnText }}
-      </button>
-      <button class="btn-input" id="mt-file-btn2" @click="mt2BtnOnclick">
-        {{ mt2BtnText }}
-      </button>
-      <button class="btn-input" id="mt-output-btn" @click="mtOutputBtnOnclick">
-        {{ mtOutputBtnText }}
-      </button>
+      <div class="btn-span-group">
+        <span>{{ originMT1BtnText }}</span>
+        <button class="btn-input" id="mt-file-btn1" @click="mt1BtnOnclick">
+          {{ mt1BtnText }}
+        </button>
+      </div>
+      <div class="btn-span-group">
+        <span>{{ originMT2BtnText }}</span>
+        <button class="btn-input" id="mt-file-btn2" @click="mt2BtnOnclick">
+          {{ mt2BtnText }}
+        </button>
+      </div>
+      <div class="btn-span-group">
+        <span>{{ originMTOutputBtnText }}</span>
+        <button class="btn-input" id="mt-output-btn" @click="mtOutputBtnOnclick">
+          {{ mtOutputBtnText }}
+        </button>
+      </div>
       <span class="current-process-file">
         當前處理的文件:
         <span id="mt-current-process-file">{{ mtCurrentProcessFile }}</span>
@@ -28,12 +37,18 @@
     </div>
     <div class="form">
       <div class="title">File Transformer,<br /><span>Wafer Report</span></div>
-      <button class="btn-input" id="wr-file-btn" @click="wrBtnOnclick">
-        {{ wrBtnText }}
-      </button>
-      <button class="btn-input" id="wr-output-btn" @click="wrOutputBtnOnclick">
-        {{ wrOutputBtnText }}
-      </button>
+      <div class="btn-span-group">
+        <span>{{ originWRBtnText }}</span>
+        <button class="btn-input" id="wr-file-btn" @click="wrBtnOnclick">
+          {{ wrBtnText }}
+        </button>
+      </div>
+      <div class="btn-span-group">
+        <span>{{ originWROutputBtnText }}</span>
+        <button class="btn-input" id="wr-output-btn" @click="wrOutputBtnOnclick">
+          {{ wrOutputBtnText }}
+        </button>
+      </div>
       <span class="current-process-file">
         當前處理的文件:
         <span id="wr-current-process-file">{{ wrCurrentProcessFile }}</span>

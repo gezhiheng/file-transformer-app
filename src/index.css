@@ -55,6 +55,13 @@
   font-size: 17px;
 }
 
+.btn-span-group {
+  width: 100%;
+  span {
+    color: var(--font-color-sub);
+  }
+}
+
 .btn-input {
   -webkit-app-region: no-drag;
   width: 100%;

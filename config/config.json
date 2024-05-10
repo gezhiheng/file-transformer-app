@@ -1,8 +1,8 @@
 {
-  "authorization": "12a25cf06a8a7c34dfa072a7ec0acb3d",
-  "machineTimePath": "C:\\Users\\henry.ge\\Desktop\\dev-work\\徐州立羽报表格式\\原始资料\\Machine Report转档前",
-  "alarmReportPath": "C:\\Users\\henry.ge\\Desktop\\dev-work\\徐州立羽报表格式\\原始资料\\Alarm Report转档前",
-  "machineTimeOutputPath": "C:\\Users\\henry.ge\\Desktop\\dev-work\\徐州立羽报表格式\\原始资料",
-  "waferReportPath": "C:\\Users\\henry.ge\\Desktop\\dev-work\\徐州立羽报表格式\\原始资料\\WaferReport转档前",
-  "waferReportOutputPath": "C:\\Users\\henry.ge\\Desktop\\dev-work\\徐州立羽报表格式\\原始资料"
+  "authorization": "",
+  "machineTimePath": "",
+  "alarmReportPath": "",
+  "machineTimeOutputPath": "",
+  "waferReportPath": "",
+  "waferReportOutputPath": ""
 }
