@@ -15,15 +15,15 @@ let task
 async function runGenWaferReportFileTask(event, obj, mainWindow) {
   win = mainWindow
   filePathObj = obj
-  window.webContents.send('log', 'WaferReport定時任務啓動')
+  win.webContents.send('log', 'WaferReport定時任務啓動')
   if (isFirstRun) {
     task = scheduleJob('5 0 * * *', () => {
-      excelDate = getYesterdayDate('_')
+      excelDate = getYesterdayDate('')
       genWaferReportFileTask(obj, excelDate)
     })
     isFirstRun = false
   }
-  excelDate = getYesterdayDate('_')
+  excelDate = getYesterdayDate('')
   genWaferReportFileTask(obj, excelDate)
 }
 
@@ -42,24 +42,27 @@ function genWaferReportFileTask(obj, excelDate) {
 let pendingLength
 
 function readFile(dirPath, executionDate) {
-  dirPath += `\\${excelDate}\\`
-  if (checkPathExists(dirPath) === 'not exists') {
-    win.send('log', `找不到該文件夾：${dirPath}`)
-    return
-  }
   const files = readdirSync(dirPath)
   const pendingHandle = []
   let completePath
+  let fileCount = 0
   files.forEach((file) => {
     completePath = join(dirPath, file)
     const stats = statSync(completePath)
     if (stats.isFile && file.includes(executionDate)) {
+      fileCount++
       pendingHandle.push({
         completePath: completePath,
         fileName: file,
       })
     }
   })
+  if (fileCount === 0) {
+    win.webContents.send('log', `${executionDate} WaferReport沒有符合的檔案`)
+    return
+  } else {
+    fileCount = 0
+  }
   pendingLength = pendingHandle.length
   pendingHandle.forEach((item) => {
     win.send('wrCurrentProcessFile', item.fileName)
@@ -78,10 +81,11 @@ function handleFile(path, fileName) {
     const tmpArray = line.split(',')
     if (line.startsWith('WaferNo')) {
       excelDataArray.push(getInitArray())
-      const arrary = fileName.split('_')
-      const formatDate = `${arrary[0]}/${arrary[1]}/${arrary[2]}`
+      const arrary = fileName.split('-')
+      const time = arrary[2]
+      const formatDate = `${time.slice(0, 4)}/${time.slice(4, 6)}/${time.slice(6, 8)}`
       excelDataArray[excelDataArray.length - 1][0] = formatDate
-      const formatTime = `${arrary[3]}:${arrary[4]}`
+      const formatTime = `${time.slice(8, 10)}:${time.slice(10, 12)}`
       excelDataArray[excelDataArray.length - 1][1] = formatTime
       excelDataArray[excelDataArray.length - 1][2] = line.split('-')[1]
     } else if (line.startsWith('Machine No')) {

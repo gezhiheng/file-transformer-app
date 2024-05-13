@@ -11,6 +11,7 @@ const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
     extraResource: ['config/config.json'],
+    icon: 'public/favicon.ico',
   },
   rebuildConfig: {},
   makers: [

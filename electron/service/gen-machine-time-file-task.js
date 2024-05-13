@@ -22,7 +22,7 @@ let excelDate
 async function runGenMachineTimeFileTask(event, obj, mainWindow) {
   win = mainWindow
   filePathObj = obj
-  window.webContents.send('log', 'MachineTime定時任務啓動')
+  win.webContents.send('log', 'MachineTime定時任務啓動')
   if (isFirstRun) {
     task = scheduleJob('5 0 * * *', () => {
       excelDate = getTodayDate('_')
@@ -78,6 +78,8 @@ const doubleCheck = {
   },
 }
 
+let fileCount = 0
+
 function genMachineTimeFileTask(obj, executionDate) {
   machineTimeExcelData = cloneDeep(originMachineTimeExcelData)
   const mtFilePath1 = obj.mtFilePath1
@@ -93,6 +95,11 @@ function genMachineTimeFileTask(obj, executionDate) {
   }
   if (mtFilePath2) {
     readFile(mtFilePath2, executionDate)
+  }
+  if (fileCount === 0) {
+    win.webContents.send('log', `${executionDate} MachineTime沒有符合的檔案`)
+  } else {
+    fileCount = 0
   }
 }
 
@@ -110,6 +117,7 @@ function readFile(dirPath, executionDate) {
       file.includes(executionDate) &&
       file.includes('MachineReport')
     ) {
+      fileCount++
       win.send('mtCurrentProcessFile', file)
       handleMachieReport(completePath, file)
     } else if (
@@ -117,6 +125,7 @@ function readFile(dirPath, executionDate) {
       file.includes(executionDate) &&
       file.includes('AlarmReport')
     ) {
+      fileCount++
       win.send('mtCurrentProcessFile', file)
       handleAlarmReport(completePath, file)
     }

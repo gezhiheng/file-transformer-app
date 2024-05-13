@@ -2,7 +2,7 @@
   "name": "file-transformer",
   "productName": "FileTransformer",
   "version": "1.2.0",
-  "description": "My Electron application description",
+  "description": "FileTransformer",
   "main": ".vite/build/main.js",
   "scripts": {
     "start": "electron-forge start",
