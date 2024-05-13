@@ -4,7 +4,7 @@ import checkAuthorization from '../utils/check-authorization'
 import macAddress from '../utils/get-mac-address'
 import runGenMachineTimeFileTask from './gen-machine-time-file-task.js'
 import runGenWaferReportFileTask from './gen-wafer-report-file-task.js'
-import { write2config, readConfig, saveLog  } from '../utils'
+import { write2config, readConfig, saveLog } from '../utils'
 
 let isAuthorization = false
 
@@ -28,7 +28,7 @@ function service(mainWindow: BrowserWindow) {
     if (!canceled) {
       const filePath = filePaths[0]
       write2config({
-        [prop]: filePath
+        [prop]: filePath,
       })
       return filePath
     }
@@ -54,7 +54,7 @@ function service(mainWindow: BrowserWindow) {
     let flag = false
     try {
       write2config({
-        authorization: authorizationCode
+        authorization: authorizationCode,
       })
       if (checkAuthorization()) {
         isAuthorization = true

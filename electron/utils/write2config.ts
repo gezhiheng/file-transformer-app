@@ -1,6 +1,7 @@
 import { app } from 'electron'
-import { existsSync, readFileSync, writeFileSync } from 'fs'
+import { readFileSync, writeFileSync } from 'fs'
 import { join } from 'path'
+import checkPathExists from './check-path-exists'
 
 function write2config(config: Config) {
   const isPackaged = app.isPackaged
@@ -11,7 +12,8 @@ function write2config(config: Config) {
   let success = true
   try {
     let configResult: Config = {}
-    if (existsSync(sourceConfigPath)) {
+    const fileStatus = checkPathExists(sourceConfigPath)
+    if (fileStatus.isExist && fileStatus.isFile) {
       const configData = readFileSync(sourceConfigPath, 'utf-8')
       configResult = JSON.parse(configData)
     }

@@ -98,3 +98,5 @@ dist-electron/
 dist/
 
 *.txt
+
+cache.json

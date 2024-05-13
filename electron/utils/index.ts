@@ -6,6 +6,12 @@ import checkPathExists from './check-path-exists'
 import write2config from './write2config'
 import readConfig from './read-config'
 import saveLog from './save-log'
+import {
+  setCache,
+  getCache,
+  clearCache,
+  checkCache,
+} from './cache'
 
 export {
   checkAuthorization,
@@ -17,4 +23,8 @@ export {
   write2config,
   readConfig,
   saveLog,
+  setCache,
+  getCache,
+  clearCache,
+  checkCache,
 }

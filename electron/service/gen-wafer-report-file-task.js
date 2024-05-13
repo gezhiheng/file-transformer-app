@@ -3,7 +3,7 @@ import { join } from 'path'
 import { createInterface } from 'readline'
 import { scheduleJob } from 'node-schedule'
 import { cloneDeep } from 'lodash'
-import { getYesterdayDate, checkPathExists, write2Excel } from '../utils'
+import { getYesterdayDate, write2Excel, setCache, checkCache } from '../utils'
 import { originWaferReportExcelData } from '../constants'
 
 let filePathObj
@@ -17,7 +17,7 @@ async function runGenWaferReportFileTask(event, obj, mainWindow) {
   filePathObj = obj
   win.webContents.send('log', 'WaferReport定時任務啓動')
   if (isFirstRun) {
-    task = scheduleJob('5 0 * * *', () => {
+    task = scheduleJob('*/2 * * * *', () => {
       executionDate = getYesterdayDate('')
       genWaferReportFileTask(obj, executionDate)
     })
@@ -49,7 +49,11 @@ function readFile(dirPath, executionDate) {
   files.forEach((fileName) => {
     completePath = join(dirPath, fileName)
     const stats = statSync(completePath)
-    if (stats.isFile && file.includes(executionDate)) {
+    if (
+      stats.isFile &&
+      fileName.includes(executionDate) &&
+      checkCache(executionDate, fileName)
+    ) {
       fileCount++
       pendingHandle.push({
         completePath: completePath,
@@ -81,12 +85,8 @@ function handleFile(path, fileName) {
     const tmpArray = line.split(',')
     if (line.startsWith('WaferNo')) {
       excelDataArray.push(getInitArray())
-      const arrary = fileName.split('-')
-      const time = arrary[2]
-      const formatDate = `${time.slice(0, 4)}/${time.slice(4, 6)}/${time.slice(6, 8)}`
-      excelDataArray[excelDataArray.length - 1][0] = formatDate
-      const formatTime = `${time.slice(8, 10)}:${time.slice(10, 12)}`
-      excelDataArray[excelDataArray.length - 1][1] = formatTime
+      setCache(executionDate, fileName)
+      formatFileNameData(fileName)
       excelDataArray[excelDataArray.length - 1][2] = line.split('-')[1]
     } else if (line.startsWith('Machine No')) {
       excelDataArray[excelDataArray.length - 1][3] =
@@ -109,12 +109,28 @@ function handleFile(path, fileName) {
   rl.on('close', () => {
     pendingLength--
     if (pendingLength === 0) {
-      write2Excel('wr', filePathObj, waferReportExcelData, excelDate, win)
+      // TODO 写入excel之前需要读取原来的Excel文件，然后追加并写入
+      write2Excel('wr', filePathObj, waferReportExcelData, executionDate, win)
       waferReportExcelData = cloneDeep(originWaferReportExcelData)
       win.send('wrCurrentProcessFile', '')
       excelDataArray = null
     }
   })
+}
+
+function formatFileNameData(fileName) {
+  const arrary = fileName.split('-')
+  let time = '????????????????????'
+  arrary.forEach((item) => {
+    if (item.includes(executionDate)) {
+      time = item
+      return
+    }
+  })
+  const formatDate = `${time.slice(0, 4)}/${time.slice(4, 6)}/${time.slice(6, 8)}`
+  excelDataArray[excelDataArray.length - 1][0] = formatDate
+  const formatTime = `${time.slice(8, 10)}:${time.slice(10, 12)}`
+  excelDataArray[excelDataArray.length - 1][1] = formatTime
 }
 
 function getInitArray() {
