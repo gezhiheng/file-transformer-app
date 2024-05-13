@@ -8,7 +8,7 @@ import { originWaferReportExcelData } from '../constants'
 
 let filePathObj
 let win
-let excelDate
+let executionDate
 let isFirstRun = true
 let task
 
@@ -18,24 +18,24 @@ async function runGenWaferReportFileTask(event, obj, mainWindow) {
   win.webContents.send('log', 'WaferReport定時任務啓動')
   if (isFirstRun) {
     task = scheduleJob('5 0 * * *', () => {
-      excelDate = getYesterdayDate('')
-      genWaferReportFileTask(obj, excelDate)
+      executionDate = getYesterdayDate('')
+      genWaferReportFileTask(obj, executionDate)
     })
     isFirstRun = false
   }
-  excelDate = getYesterdayDate('')
-  genWaferReportFileTask(obj, excelDate)
+  executionDate = getYesterdayDate('')
+  genWaferReportFileTask(obj, executionDate)
 }
 
 let waferReportExcelData
 let excelDataArray
 
-function genWaferReportFileTask(obj, excelDate) {
+function genWaferReportFileTask(obj, executionDate) {
   waferReportExcelData = cloneDeep(originWaferReportExcelData)
   excelDataArray = waferReportExcelData[0].data
   const wrFilePath = obj.wrFilePath
   if (wrFilePath) {
-    readFile(wrFilePath, excelDate)
+    readFile(wrFilePath, executionDate)
   }
 }
 
@@ -46,14 +46,14 @@ function readFile(dirPath, executionDate) {
   const pendingHandle = []
   let completePath
   let fileCount = 0
-  files.forEach((file) => {
-    completePath = join(dirPath, file)
+  files.forEach((fileName) => {
+    completePath = join(dirPath, fileName)
     const stats = statSync(completePath)
     if (stats.isFile && file.includes(executionDate)) {
       fileCount++
       pendingHandle.push({
         completePath: completePath,
-        fileName: file,
+        fileName: fileName,
       })
     }
   })
