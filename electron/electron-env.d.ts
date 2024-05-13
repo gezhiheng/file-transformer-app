@@ -39,3 +39,13 @@ interface InitData {
   config: Config
   macAddress: string
 }
+
+interface fileStatus {
+  isFile: boolean
+  isDirectory: boolean
+  isExist: boolean
+}
+
+interface cache {
+  [dateKey: string]: any
+}
