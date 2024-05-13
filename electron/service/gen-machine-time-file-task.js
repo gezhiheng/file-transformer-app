@@ -107,7 +107,8 @@ function readFile(dirPath, executionDate) {
   const files = readdirSync(dirPath)
   files.forEach((file) => {
     const completePath = join(dirPath, file)
-    if (checkPathExists(completePath) === 'not exists') {
+    const fileStatus = checkPathExists(completePath)
+    if (!fileStatus.isExist()) {
       win.send('log', `該路徑下找不到文件：${completePath}`)
       return
     }
