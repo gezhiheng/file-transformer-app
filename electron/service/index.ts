@@ -4,6 +4,7 @@ import checkAuthorization from '../utils/check-authorization'
 import macAddress from '../utils/get-mac-address'
 import runGenMachineTimeFileTask from './gen-machine-time-file-task.js'
 import runGenWaferReportFileTask from './gen-wafer-report-file-task.js'
+import runClearCacheTask from './clear-cache-task'
 import { write2config, readConfig, saveLog } from '../utils'
 
 let isAuthorization = false
@@ -16,6 +17,8 @@ function service(mainWindow: BrowserWindow) {
     macAddress: macAddress,
   }
   mainWindow.webContents.send('init', initData)
+
+  runClearCacheTask()
 
   ipcMain.handle('dialog:openDirectory', async (event, prop) => {
     if (!isAuthorization) {

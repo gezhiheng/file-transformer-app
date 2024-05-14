@@ -1,7 +1,7 @@
 {
   "name": "file-transformer",
   "productName": "File Transformer",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "File Transformer",
   "main": ".vite/build/main.js",
   "scripts": {
