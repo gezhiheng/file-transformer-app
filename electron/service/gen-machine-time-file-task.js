@@ -17,7 +17,7 @@ let filePathObj
 let task
 let isFirstRun = true
 let win
-let excelDate
+let executionDate
 
 async function runGenMachineTimeFileTask(event, obj, mainWindow) {
   win = mainWindow
@@ -25,13 +25,13 @@ async function runGenMachineTimeFileTask(event, obj, mainWindow) {
   win.webContents.send('log', 'MachineTime定時任務啓動')
   if (isFirstRun) {
     task = scheduleJob('5 0 * * *', () => {
-      excelDate = getTodayDate('_')
-      genMachineTimeFileTask(obj, excelDate)
+      executionDate = getTodayDate('_')
+      genMachineTimeFileTask(obj, executionDate)
     })
     isFirstRun = false
   }
-  excelDate = getTodayDate('_')
-  genMachineTimeFileTask(obj, excelDate)
+  executionDate = getTodayDate('_')
+  genMachineTimeFileTask(obj, executionDate)
 }
 
 let machineTimeExcelData
