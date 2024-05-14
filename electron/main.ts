@@ -44,7 +44,8 @@ const createWindow = () => {
 
 app.whenReady().then(() => {
   createWindow()
-  mainWindow.setIcon('public/favicon.ico')
+  // FIXME
+  // mainWindow.setIcon('public/favicon.ico')
   // 渲染进程加载完后调用业务
   ipcMain.on('rendererFinishLoad', () => {
     service(mainWindow)
