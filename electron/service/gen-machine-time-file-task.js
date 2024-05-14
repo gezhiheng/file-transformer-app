@@ -109,7 +109,7 @@ function readFile(dirPath, executionDate) {
   files.forEach((file) => {
     const completePath = join(dirPath, file)
     const fileStatus = checkPathExists(completePath)
-    if (!fileStatus.isExist()) {
+    if (!fileStatus.isExist) {
       win.send('log', `該路徑下找不到文件：${completePath}`)
       return
     }
