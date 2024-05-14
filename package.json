@@ -1,8 +1,8 @@
 {
   "name": "file-transformer",
-  "productName": "FileTransformer",
-  "version": "1.2.0",
-  "description": "FileTransformer",
+  "productName": "File Transformer",
+  "version": "1.2.2",
+  "description": "File Transformer",
   "main": ".vite/build/main.js",
   "scripts": {
     "start": "electron-forge start",
