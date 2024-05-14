@@ -12,6 +12,7 @@ import {
   clearCache,
   checkCache,
 } from './cache'
+import { write2excel, readExcel } from './excel'
 
 export {
   checkAuthorization,
@@ -27,4 +28,6 @@ export {
   getCache,
   clearCache,
   checkCache,
+  write2excel,
+  readExcel,
 }

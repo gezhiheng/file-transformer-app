@@ -3,7 +3,7 @@ import { join } from 'path'
 import { createInterface } from 'readline'
 import { scheduleJob } from 'node-schedule'
 import { cloneDeep } from 'lodash'
-import { getYesterdayDate, write2Excel, setCache, checkCache } from '../utils'
+import { getTodayDate, write2excel, readExcel, setCache, checkCache } from '../utils'
 import { originWaferReportExcelData } from '../constants'
 
 let filePathObj
@@ -17,13 +17,13 @@ async function runGenWaferReportFileTask(event, obj, mainWindow) {
   filePathObj = obj
   win.webContents.send('log', 'WaferReport定時任務啓動')
   if (isFirstRun) {
-    task = scheduleJob('*/2 * * * *', () => {
-      executionDate = getYesterdayDate('')
+    task = scheduleJob('0/3 * * * * ?', () => {
+      executionDate = getTodayDate('')
       genWaferReportFileTask(obj, executionDate)
     })
     isFirstRun = false
   }
-  executionDate = getYesterdayDate('')
+  executionDate = getTodayDate('')
   genWaferReportFileTask(obj, executionDate)
 }
 
@@ -52,7 +52,7 @@ function readFile(dirPath, executionDate) {
     if (
       stats.isFile &&
       fileName.includes(executionDate) &&
-      checkCache(executionDate, fileName)
+      !checkCache(executionDate, fileName)
     ) {
       fileCount++
       pendingHandle.push({
@@ -62,7 +62,6 @@ function readFile(dirPath, executionDate) {
     }
   })
   if (fileCount === 0) {
-    win.webContents.send('log', `${executionDate} WaferReport沒有符合的檔案`)
     return
   } else {
     fileCount = 0
@@ -74,18 +73,27 @@ function readFile(dirPath, executionDate) {
   })
 }
 
+const pendingCacheFileNames = []
+
 function handleFile(path, fileName) {
   const rl = createInterface({
     input: createReadStream(path),
     output: process.stdout,
     terminal: false,
   })
+
+  onReadLine(rl, fileName)
+
+  onReadClose(rl)
+}
+
+function onReadLine(rl, fileName) {
   let countNumberLine = 0
   rl.on('line', (line) => {
     const tmpArray = line.split(',')
     if (line.startsWith('WaferNo')) {
       excelDataArray.push(getInitArray())
-      setCache(executionDate, fileName)
+      pendingCacheFileNames.push(fileName)
       formatFileNameData(fileName)
       excelDataArray[excelDataArray.length - 1][2] = line.split('-')[1]
     } else if (line.startsWith('Machine No')) {
@@ -106,11 +114,38 @@ function handleFile(path, fileName) {
       excelDataArray[excelDataArray.length - 1][7] = totalYield
     }
   })
+}
+
+function onReadClose(rl) {
   rl.on('close', () => {
     pendingLength--
     if (pendingLength === 0) {
-      // TODO 写入excel之前需要读取原来的Excel文件，然后追加并写入
-      write2Excel('wr', filePathObj, waferReportExcelData, executionDate, win)
+      const excelFileName = `WaferReport_${executionDate}.xlsx`
+      const excelFilePath = join(filePathObj.wrOutputPath, excelFileName)
+      const data = readExcel(excelFilePath)
+      
+      let isFirstLine = true
+      if (data.length !== 0) {
+        excelDataArray.forEach((item) => {
+          if (isFirstLine) {
+            isFirstLine = false
+            return
+          }
+          data[0].data.push(item)
+        })
+        waferReportExcelData = data
+      }
+      const success = write2excel(excelFilePath, waferReportExcelData)
+      if (success) {
+        pendingCacheFileNames.forEach((fileName) => {
+          setCache(executionDate, fileName)
+        })
+        win.send('log', `Excel寫入成功，文件所在位置： ${excelFilePath}`)
+      } else {
+        win.send('log', 'Excel寫入失敗，請檢查是否打開Excel文件')
+      }
+
+      pendingCacheFileNames.length = 0
       waferReportExcelData = cloneDeep(originWaferReportExcelData)
       win.send('wrCurrentProcessFile', '')
       excelDataArray = null

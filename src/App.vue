@@ -31,7 +31,7 @@
           id="mt-start-btn"
           @click="machineTimeBtnOnclick"
         >
-          開始
+          {{ mtStartBtnText }}
         </button>
       </div>
     </div>
@@ -59,7 +59,7 @@
           id="wr-start-btn"
           @click="waferReportBtnOnclick"
         >
-          開始
+          {{ wrStartBtnText }}
         </button>
         <!-- <button class="btn-confirm" id="wr-save-btn">保存路徑</button> -->
       </div>
@@ -106,6 +106,9 @@ const originMT2BtnText = 'Alarm Report 轉檔前路徑'
 const originMTOutputBtnText = 'Machine Time 轉檔後路徑'
 const originWRBtnText = 'Wafer Report 轉檔前路徑'
 const originWROutputBtnText = 'Wafer Report 轉檔後路徑'
+
+const mtStartBtnText = ref('開始')
+const wrStartBtnText = ref('開始')
 
 const mt1BtnText = ref<string>(originMT1BtnText)
 const mt2BtnText = ref<string>(originMT2BtnText)
@@ -235,6 +238,7 @@ const machineTimeBtnOnclick = () => {
     mtFilePath2: mt2BtnText.value,
     mtOutputPath: mtOutputBtnText.value,
   })
+  mtStartBtnText.value = '已啓動'
 }
 
 const waferReportBtnOnclick = () => {
@@ -249,6 +253,7 @@ const waferReportBtnOnclick = () => {
     wrFilePath: wrBtnText.value,
     wrOutputPath: wrOutputBtnText.value,
   })
+  wrStartBtnText.value = '已啓動'
 }
 
 const authorizationCodeBtnOnclick = () => {

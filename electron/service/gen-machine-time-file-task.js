@@ -45,6 +45,7 @@ const doubleCheck = {
   set path1Done(isDone) {
     this._path1Done = isDone
     if (this._path2Done && this._path1Done) {
+      // TODO 用write2excel方法代替
       write2Excel(
         'mt',
         filePathObj,
