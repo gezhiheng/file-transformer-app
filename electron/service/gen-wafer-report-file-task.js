@@ -3,7 +3,13 @@ import { join } from 'path'
 import { createInterface } from 'readline'
 import { scheduleJob } from 'node-schedule'
 import { cloneDeep } from 'lodash'
-import { getTodayDate, write2excel, readExcel, setCache, checkCache } from '../utils'
+import {
+  getTodayDate,
+  write2excel,
+  readExcel,
+  setCache,
+  checkCache,
+} from '../utils'
 import { originWaferReportExcelData } from '../constants'
 
 let filePathObj
@@ -123,7 +129,7 @@ function onReadClose(rl) {
       const excelFileName = `WaferReport_${executionDate}.xlsx`
       const excelFilePath = join(filePathObj.wrOutputPath, excelFileName)
       const data = readExcel(excelFilePath)
-      
+
       let isFirstLine = true
       if (data.length !== 0) {
         excelDataArray.forEach((item) => {
