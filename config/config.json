@@ -1,8 +1,8 @@
 {
-  "authorization": "12a25cf06a8a7c34dfa072a7ec0acb3d",
-  "machineTimePath": "",
-  "alarmReportPath": "",
-  "machineTimeOutputPath": "",
-  "waferReportPath": "",
-  "waferReportOutputPath": ""
+  "authorization": "c5406472b7a11a0aaa80446ccff672d1",
+  "machineTimePath": "C:\\Users\\litong.qu\\Documents",
+  "alarmReportPath": "C:\\Users\\litong.qu\\Documents",
+  "machineTimeOutputPath": "C:\\Users\\litong.qu\\Documents",
+  "waferReportPath": "C:\\Users\\litong.qu\\Documents",
+  "waferReportOutputPath": "C:\\Users\\litong.qu\\Documents"
 }
