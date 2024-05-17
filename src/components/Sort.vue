@@ -100,19 +100,8 @@ const wrCurrentProcessFile = ref<string>('')
 
 const log = ref<string>('')
 const authorizationCode = ref<string>('')
-const dialogTableVisible = ref<boolean>(false)
 
-watch(dialogTableVisible, (newValue, oldValue) => {
-  if (newValue) {
-    document.querySelectorAll('*').forEach((item) => {
-      item.classList.add('no-drag')
-    })
-  } else {
-    document.querySelectorAll('*').forEach((item) => {
-      item.classList.remove('no-drag')
-    })
-  }
-})
+const showDialog = defineModel()
 
 const mt1BtnOnclick = async () => {
   const filePath = await win.api.handle(
@@ -164,7 +153,7 @@ const wrOutputBtnOnclick = async () => {
   }
 }
 
-win.api.receive('log', (data: string) => {
+win.api.receive('sort:log', (data: string) => {
   const timestamp = new Date().toLocaleString('zh-CN', {
     year: 'numeric',
     month: 'long',
@@ -174,7 +163,7 @@ win.api.receive('log', (data: string) => {
     second: '2-digit',
   })
   if (data === '當前MAC地址沒有授權') {
-    dialogTableVisible.value = true
+    showDialog.value = true
   }
   log.value = `${timestamp}: ${data}\n${log.value}`
 })
@@ -205,15 +194,6 @@ win.api.receive('wrCurrentProcessFile', (data: string) => {
   wrCurrentProcessFile.value = data
 })
 
-win.api.receive('config:authorizationCode', (flag: boolean) => {
-  dialogTableVisible.value = false
-  if (flag) {
-    alert('授權成功!')
-  } else {
-    alert('錯誤：授權失敗，請聯係開發人員！')
-  }
-})
-
 const machineTimeBtnOnclick = () => {
   if (
     mt1BtnText.value === originMT1BtnText ||
@@ -223,7 +203,7 @@ const machineTimeBtnOnclick = () => {
     alert('Machine Time 請补充轉換文件路徑')
     return
   }
-  win.api.send('task:genMachineTimeFile', {
+  win.api.send('sort:task:genMachineTimeFile', {
     mtFilePath1: mt1BtnText.value,
     mtFilePath2: mt2BtnText.value,
     mtOutputPath: mtOutputBtnText.value,
@@ -239,7 +219,7 @@ const waferReportBtnOnclick = () => {
     alert('Wafer Report 請补充轉換文件路徑')
     return
   }
-  win.api.send('task:genWaferReportFile', {
+  win.api.send('sort:task:genWaferReportFile', {
     wrFilePath: wrBtnText.value,
     wrOutputPath: wrOutputBtnText.value,
   })
@@ -255,7 +235,7 @@ const authorizationCodeBtnOnclick = () => {
 }
 
 const saveLogBtnOnclick = () => {
-  win.api.send('saveLog', log.value)
+  win.api.send('sort:saveLog', log.value)
 }
 </script>
 

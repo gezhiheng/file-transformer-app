@@ -22,9 +22,9 @@
       v-model="authorizationCode"
       style="width: 240px; margin-right: 6px"
     />
-    <el-button type="info" plain @click="authorizationCodeBtnOnclick"
-      >確定</el-button
-    >
+    <el-button type="info" plain @click="authorizationCodeBtnOnclick">
+      確定
+    </el-button>
   </el-dialog>
 </template>
 
