@@ -5,7 +5,11 @@
       <Sort />
     </el-tab-pane>
     <el-tab-pane label="點測" name="probe">
+<<<<<<< HEAD
       <!-- <Probe /> -->
+=======
+      <Probe />
+>>>>>>> main
     </el-tab-pane>
   </el-tabs>
   <div class="footer">

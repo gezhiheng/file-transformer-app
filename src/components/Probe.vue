@@ -3,7 +3,11 @@
     <div class="form" style="margin-right: 6px">
       <div class="title">點測轉檔, <span>Machine Time Report</span></div>
       <div class="btn-span-group">
+<<<<<<< HEAD
         <span>{{ originMTMonitorText }}</span>
+=======
+        <span>{{ originMT1BtnText }}</span>
+>>>>>>> main
         <button class="btn-input" id="mt-file-btn1" @click="mt1BtnOnclick">
           {{ mt1BtnText }}
         </button>
@@ -110,6 +114,7 @@ import { ref, watch } from 'vue'
 
 const win: any = window
 
+<<<<<<< HEAD
 const originMTMonitorText = 'Machine Time 监控路徑'
 const originMTBackupText = 'Machine Time 备份路徑'
 const originALMonitorText = 'Alarm Report 监控路徑'
@@ -119,11 +124,22 @@ const originMTOutputText = 'Machine Time Report 產出'
 const originProbeStdText = '標準檔選擇'
 const originProbeDailyText = '日校檔選擇'
 const originProbeOutputText = 'Probe Report 產出'
+=======
+const originMT1BtnText = 'Machine Time 轉檔前路徑'
+const originMT2BtnText = 'Alarm Report 轉檔前路徑'
+const originMTOutputBtnText = 'Machine Time 轉檔後路徑'
+const originWRBtnText = 'Wafer Report 轉檔前路徑'
+const originWROutputBtnText = 'Wafer Report 轉檔後路徑'
+>>>>>>> main
 
 const mtStartBtnText = ref('開始')
 const wrStartBtnText = ref('開始')
 
+<<<<<<< HEAD
 const mt1BtnText = ref<string>(originMTMonitorText)
+=======
+const mt1BtnText = ref<string>(originMT1BtnText)
+>>>>>>> main
 const mt2BtnText = ref<string>(originMT2BtnText)
 const mtOutputBtnText = ref<string>(originMTOutputBtnText)
 const mtCurrentProcessFile = ref<string>('')
