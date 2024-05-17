@@ -1,9 +1,11 @@
 const sendChannels: string[] = [
   'rendererFinishLoad',
-  'task:genMachineTimeFile',
-  'task:genWaferReportFile',
   'authorizationCode',
-  'saveLog',
+  // 分选转档的channel
+  'sort:task:genMachineTimeFile',
+  'sort:task:genWaferReportFile',
+  'sort:saveLog',
+  // 点测转档的channel
 ]
 
 export default sendChannels

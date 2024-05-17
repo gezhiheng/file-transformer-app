@@ -1,10 +1,6 @@
 const receiveChannels: string[] = [
   'init',
-  'mtCurrentProcessFile',
-  'wrCurrentProcessFile',
-  'log',
-  'mtCurrentProcessFile',
-  'wrCurrentProcessFile',
+  'sort:log',
   'config:authorizationCode',
 ]
 

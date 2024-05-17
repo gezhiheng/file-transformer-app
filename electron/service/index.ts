@@ -2,10 +2,9 @@ import { ipcMain, dialog } from 'electron'
 import type { BrowserWindow } from 'electron'
 import checkAuthorization from '../utils/check-authorization'
 import macAddress from '../utils/get-mac-address'
-import runGenMachineTimeFileTask from './gen-machine-time-file-task.js'
-import runGenWaferReportFileTask from './gen-wafer-report-file-task.js'
 import runClearCacheTask from './clear-cache-task'
-import { write2config, readConfig, saveLog } from '../utils'
+import { write2config, readConfig } from '../utils'
+import { handleSort } from './sort'
 
 let isAuthorization = false
 
@@ -37,21 +36,7 @@ function service(mainWindow: BrowserWindow) {
     }
   })
 
-  ipcMain.on('task:genMachineTimeFile', (event, filePathObj) => {
-    if (!isAuthorization) {
-      mainWindow.webContents.send('log', '當前MAC地址沒有授權')
-      return
-    }
-    runGenMachineTimeFileTask(event, filePathObj, mainWindow)
-  })
-
-  ipcMain.on('task:genWaferReportFile', (event, filePathObj) => {
-    if (!isAuthorization) {
-      mainWindow.webContents.send('log', '當前MAC地址沒有授權')
-      return
-    }
-    runGenWaferReportFileTask(event, filePathObj, mainWindow)
-  })
+  handleSort(isAuthorization, mainWindow)
 
   ipcMain.on('authorizationCode', (event, authorizationCode) => {
     let flag = false
@@ -67,12 +52,6 @@ function service(mainWindow: BrowserWindow) {
       flag = false
     }
     mainWindow.webContents.send('config:authorizationCode', flag)
-  })
-
-  ipcMain.on('saveLog', (event, log) => {
-    const success = saveLog(log)
-    const message = success ? '日志保存成功' : '日志保存失敗'
-    mainWindow.webContents.send('log', message)
   })
 }
 
