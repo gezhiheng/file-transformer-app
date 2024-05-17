@@ -36,7 +36,7 @@ function service(mainWindow: BrowserWindow) {
     }
   })
 
-  handleSort(isAuthorization, mainWindow)
+  sortService(isAuthorization, mainWindow)
 
   ipcMain.on('authorizationCode', (event, authorizationCode) => {
     let flag = false

@@ -4,7 +4,7 @@ import runGenMachineTimeFileTask from './gen-machine-time-file-task.js'
 import runGenWaferReportFileTask from './gen-wafer-report-file-task.js'
 import { saveLog } from 'e/utils'
 
-function handleSort(isAuthorization: boolean, mainWindow: BrowserWindow) {
+function sortService(isAuthorization: boolean, mainWindow: BrowserWindow) {
   ipcMain.on('sort:task:genMachineTimeFile', (event, filePathObj) => {
     if (!isAuthorization) {
       mainWindow.webContents.send('log', '當前MAC地址沒有授權')
@@ -28,4 +28,4 @@ function handleSort(isAuthorization: boolean, mainWindow: BrowserWindow) {
   })
 }
 
-export default handleSort
+export default sortService

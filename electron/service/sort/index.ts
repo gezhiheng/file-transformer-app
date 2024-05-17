@@ -1,3 +1,3 @@
-import handleSort from './handle-sort'
+import sortService from './sort-service'
 
-export { handleSort }
+export { sortService }
