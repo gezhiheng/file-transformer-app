@@ -2,9 +2,28 @@ import { ipcMain } from 'electron'
 import type { BrowserWindow } from 'electron'
 import runGenMachineTimeFileTask from './gen-machine-time-file-task.js'
 import runGenWaferReportFileTask from './gen-wafer-report-file-task.js'
-import { saveLog } from 'e/utils'
+import { saveLog, readConfig } from 'e/utils'
 
 function sortService(isAuthorization: boolean, mainWindow: BrowserWindow) {
+  const config = readConfig()
+  mainWindow.webContents.send('sort:init', {
+    sortMachineTimePath: config.sortMachineTimePath
+      ? config.sortMachineTimePath
+      : '',
+    sortAlarmReportPath: config.sortAlarmReportPath
+      ? config.sortAlarmReportPath
+      : '',
+    sortMachineTimeOutputPath: config.sortMachineTimeOutputPath
+      ? config.sortMachineTimeOutputPath
+      : '',
+    sortWaferReportPath: config.sortWaferReportPath
+      ? config.sortWaferReportPath
+      : '',
+    sortWaferReportOutputPath: config.sortWaferReportOutputPath
+      ? config.sortWaferReportOutputPath
+      : '',
+  })
+
   ipcMain.on('sort:task:genMachineTimeFile', (event, filePathObj) => {
     if (!isAuthorization) {
       mainWindow.webContents.send('log', '當前MAC地址沒有授權')

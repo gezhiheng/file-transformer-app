@@ -3,11 +3,11 @@
     <div class="form" style="margin-right: 6px">
       <div class="title">點測轉檔, <span>Machine Time Report</span></div>
       <div class="btn-span-group">
-<<<<<<< HEAD
+        <<<<<<< HEAD
         <span>{{ originMTMonitorText }}</span>
-=======
+        =======
         <span>{{ originMT1BtnText }}</span>
->>>>>>> main
+        >>>>>>> main
         <button class="btn-input" id="mt-file-btn1" @click="mt1BtnOnclick">
           {{ mt1BtnText }}
         </button>

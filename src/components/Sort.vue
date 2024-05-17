@@ -92,21 +92,18 @@ const wrStartBtnText = ref('開始')
 const mt1BtnText = ref<string>(originMT1BtnText)
 const mt2BtnText = ref<string>(originMT2BtnText)
 const mtOutputBtnText = ref<string>(originMTOutputBtnText)
-const mtCurrentProcessFile = ref<string>('')
 
 const wrBtnText = ref<string>(originWRBtnText)
 const wrOutputBtnText = ref<string>(originWROutputBtnText)
-const wrCurrentProcessFile = ref<string>('')
 
 const log = ref<string>('')
-const authorizationCode = ref<string>('')
 
 const showDialog = defineModel()
 
 const mt1BtnOnclick = async () => {
   const filePath = await win.api.handle(
     'dialog:openDirectory',
-    'machineTimePath',
+    'sortMachineTimePath',
   )
   if (filePath) {
     mt1BtnText.value = filePath
@@ -116,7 +113,7 @@ const mt1BtnOnclick = async () => {
 const mt2BtnOnclick = async () => {
   const filePath = await win.api.handle(
     'dialog:openDirectory',
-    'alarmReportPath',
+    'sortAlarmReportPath',
   )
   if (filePath) {
     mt2BtnText.value = filePath
@@ -126,7 +123,7 @@ const mt2BtnOnclick = async () => {
 const mtOutputBtnOnclick = async () => {
   const filePath = await win.api.handle(
     'dialog:openDirectory',
-    'machineTimeOutputPath',
+    'sortMachineTimeOutputPath',
   )
   if (filePath) {
     mtOutputBtnText.value = filePath
@@ -136,7 +133,7 @@ const mtOutputBtnOnclick = async () => {
 const wrBtnOnclick = async () => {
   const filePath = await win.api.handle(
     'dialog:openDirectory',
-    'waferReportPath',
+    'sortWaferReportPath',
   )
   if (filePath) {
     wrBtnText.value = filePath
@@ -146,7 +143,7 @@ const wrBtnOnclick = async () => {
 const wrOutputBtnOnclick = async () => {
   const filePath = await win.api.handle(
     'dialog:openDirectory',
-    'waferReportOutputPath',
+    'sortWaferReportOutputPath',
   )
   if (filePath) {
     wrOutputBtnText.value = filePath
@@ -186,14 +183,6 @@ win.api.receive('sort:init', (data: any) => {
     : originWROutputBtnText
 })
 
-win.api.receive('mtCurrentProcessFile', (data: string) => {
-  mtCurrentProcessFile.value = data
-})
-
-win.api.receive('wrCurrentProcessFile', (data: string) => {
-  wrCurrentProcessFile.value = data
-})
-
 const machineTimeBtnOnclick = () => {
   if (
     mt1BtnText.value === originMT1BtnText ||
@@ -224,14 +213,6 @@ const waferReportBtnOnclick = () => {
     wrOutputPath: wrOutputBtnText.value,
   })
   wrStartBtnText.value = '已啓動'
-}
-
-const authorizationCodeBtnOnclick = () => {
-  if (authorizationCode.value === '') {
-    alert('授權碼不能為空')
-    return
-  }
-  win.api.send('authorizationCode', authorizationCode.value)
 }
 
 const saveLogBtnOnclick = () => {
