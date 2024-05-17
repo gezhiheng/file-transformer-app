@@ -28,11 +28,11 @@ interface Window {
 
 interface Config {
   authorization?: string
-  machineTimePath?: string
-  alarmReportPath?: string
-  machineTimeOutputPath?: string
-  waferReportPath?: string
-  waferReportOutputPath?: string
+  sortMachineTimePath?: string
+  sortAlarmReportPath?: string
+  sortMachineTimeOutputPath?: string
+  sortWaferReportPath?: string
+  sortWaferReportOutputPath?: string
 }
 
 interface InitData {
