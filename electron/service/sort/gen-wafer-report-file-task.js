@@ -3,8 +3,14 @@ import { join } from 'path'
 import { createInterface } from 'readline'
 import { scheduleJob } from 'node-schedule'
 import { cloneDeep } from 'lodash'
-import { getTodayDate, write2excel, readExcel, setCache, checkCache } from '../utils'
-import { originWaferReportExcelData } from '../constants'
+import {
+  getTodayDate,
+  write2excel,
+  readExcel,
+  setCache,
+  checkCache,
+} from '../../utils'
+import { originWaferReportExcelData } from '../../constants'
 
 let filePathObj
 let win
@@ -15,7 +21,7 @@ let task
 async function runGenWaferReportFileTask(event, obj, mainWindow) {
   win = mainWindow
   filePathObj = obj
-  win.webContents.send('log', 'WaferReport定時任務啓動')
+  win.send('sort:log', 'WaferReport任務啓動')
   if (isFirstRun) {
     task = scheduleJob('0/3 * * * * ?', () => {
       executionDate = getTodayDate('')
@@ -68,7 +74,6 @@ function readFile(dirPath, executionDate) {
   }
   pendingLength = pendingHandle.length
   pendingHandle.forEach((item) => {
-    win.send('wrCurrentProcessFile', item.fileName)
     handleFile(item.completePath, item.fileName)
   })
 }
@@ -123,7 +128,7 @@ function onReadClose(rl) {
       const excelFileName = `WaferReport_${executionDate}.xlsx`
       const excelFilePath = join(filePathObj.wrOutputPath, excelFileName)
       const data = readExcel(excelFilePath)
-      
+
       let isFirstLine = true
       if (data.length !== 0) {
         excelDataArray.forEach((item) => {
@@ -140,14 +145,13 @@ function onReadClose(rl) {
         pendingCacheFileNames.forEach((fileName) => {
           setCache(executionDate, fileName)
         })
-        win.send('log', `Excel寫入成功，文件所在位置： ${excelFilePath}`)
+        win.send('sort:log', `Excel寫入成功，文件所在位置： ${excelFilePath}`)
       } else {
-        win.send('log', 'Excel寫入失敗，請檢查是否打開Excel文件')
+        win.send('sort:log', 'Excel寫入失敗，請檢查是否打開Excel文件')
       }
 
       pendingCacheFileNames.length = 0
       waferReportExcelData = cloneDeep(originWaferReportExcelData)
-      win.send('wrCurrentProcessFile', '')
       excelDataArray = null
     }
   })

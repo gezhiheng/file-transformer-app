@@ -5,13 +5,8 @@ import { scheduleJob } from 'node-schedule'
 import { cloneDeep } from 'lodash'
 import { detect } from 'jschardet'
 import { decodeStream } from 'iconv-lite'
-import { originMachineTimeExcelData } from '../constants'
-import {
-  getYesterdayDate,
-  getTodayDate,
-  checkPathExists,
-  write2Excel,
-} from '../utils'
+import { originMachineTimeExcelData } from '../../constants'
+import { getTodayDate, checkPathExists, write2excel } from '../../utils'
 
 let filePathObj
 let task
@@ -22,7 +17,7 @@ let executionDate
 async function runGenMachineTimeFileTask(event, obj, mainWindow) {
   win = mainWindow
   filePathObj = obj
-  win.webContents.send('log', 'MachineTime定時任務啓動')
+  win.webContents.send('sort:log', 'MachineTime定時任務啓動')
   if (isFirstRun) {
     task = scheduleJob('5 0 * * *', () => {
       executionDate = getTodayDate('_')
@@ -45,15 +40,7 @@ const doubleCheck = {
   set path1Done(isDone) {
     this._path1Done = isDone
     if (this._path2Done && this._path1Done) {
-      // TODO 用write2excel方法代替
-      write2Excel(
-        'mt',
-        filePathObj,
-        machineTimeExcelData,
-        getYesterdayDate(''),
-        win,
-      )
-      machineTimeExcelData = cloneDeep(originMachineTimeExcelData)
+      doubleCheckDone(filePathObj)
       this._path1Done = false
       this._path2Done = false
     }
@@ -65,18 +52,27 @@ const doubleCheck = {
   set path2Done(isDone) {
     this._path2Done = isDone
     if (this._path2Done && this._path1Done) {
-      write2Excel(
-        'mt',
-        filePathObj,
-        machineTimeExcelData,
-        getYesterdayDate(''),
-        win,
-      )
-      machineTimeExcelData = cloneDeep(originMachineTimeExcelData)
+      doubleCheckDone(filePathObj)
       this._path1Done = false
       this._path2Done = false
     }
   },
+}
+
+function doubleCheckDone(filePathObj) {
+  const filePath = join(
+    filePathObj.mtOutputPath,
+    `MachineTime_${getTodayDate('')}.xlsx`,
+  )
+  const success = write2excel(filePath, machineTimeExcelData)
+
+  if (success) {
+    win.send('sort:log', `Excel寫入成功，文件位置：${filePath}`)
+  } else {
+    win.send('sort:log', `出現錯誤，文件位置：${filePath}`)
+    win.send('sort:log', '請檢查Excel是否關閉')
+  }
+  machineTimeExcelData = cloneDeep(originMachineTimeExcelData)
 }
 
 let fileCount = 0
@@ -98,7 +94,7 @@ function genMachineTimeFileTask(obj, executionDate) {
     readFile(mtFilePath2, executionDate)
   }
   if (fileCount === 0) {
-    win.webContents.send('log', `${executionDate} MachineTime沒有符合的檔案`)
+    win.send('sort:log', `${executionDate} MachineTime沒有符合的檔案`)
   } else {
     fileCount = 0
   }
@@ -110,7 +106,7 @@ function readFile(dirPath, executionDate) {
     const completePath = join(dirPath, file)
     const fileStatus = checkPathExists(completePath)
     if (!fileStatus.isExist) {
-      win.send('log', `該路徑下找不到文件：${completePath}`)
+      win.send('sort:log', `該路徑下找不到文件：${completePath}`)
       return
     }
     const stats = statSync(completePath)
@@ -120,7 +116,6 @@ function readFile(dirPath, executionDate) {
       file.includes('MachineReport')
     ) {
       fileCount++
-      win.send('mtCurrentProcessFile', file)
       handleMachieReport(completePath, file)
     } else if (
       stats.isFile &&
@@ -128,7 +123,6 @@ function readFile(dirPath, executionDate) {
       file.includes('AlarmReport')
     ) {
       fileCount++
-      win.send('mtCurrentProcessFile', file)
       handleAlarmReport(completePath, file)
     }
   })
@@ -187,7 +181,6 @@ function handleMachieReport(path, fileName) {
       downTimeArray.length =
       alarmTimeArray.length =
         0
-    win.send('mtCurrentProcessFile', '')
   })
 }
 
@@ -235,7 +228,6 @@ function handleAlarmReport(path, fileName) {
   rl.on('close', () => {
     doubleCheck.path2Done = true
     isFirstLine = true
-    win.send('wrCurrentProcessFile', '')
   })
 }
 
