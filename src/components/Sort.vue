@@ -168,21 +168,21 @@ win.api.receive('sort:log', (data: string) => {
   log.value = `${timestamp}: ${data}\n${log.value}`
 })
 
-win.api.receive('init', (data: any) => {
-  mt1BtnText.value = data.config.machineTimePath
-    ? data.config.machineTimePath
+win.api.receive('sort:init', (data: any) => {
+  mt1BtnText.value = data.config.sortMachineTimePath
+    ? data.config.sortMachineTimePath
     : originMT1BtnText
-  mt2BtnText.value = data.config.alarmReportPath
-    ? data.config.alarmReportPath
+  mt2BtnText.value = data.config.sortAlarmReportPath
+    ? data.config.sortAlarmReportPath
     : originMT2BtnText
-  mtOutputBtnText.value = data.config.machineTimeOutputPath
-    ? data.config.machineTimeOutputPath
+  mtOutputBtnText.value = data.config.sortMachineTimeOutputPath
+    ? data.config.sortMachineTimeOutputPath
     : originMTOutputBtnText
-  wrBtnText.value = data.config.waferReportPath
-    ? data.config.waferReportPath
+  wrBtnText.value = data.config.sortWaferReportPath
+    ? data.config.sortWaferReportPath
     : originWRBtnText
-  wrOutputBtnText.value = data.config.waferReportOutputPath
-    ? data.config.waferReportOutputPath
+  wrOutputBtnText.value = data.config.sortWaferReportOutputPath
+    ? data.config.sortWaferReportOutputPath
     : originWROutputBtnText
 })
 

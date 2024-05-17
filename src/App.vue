@@ -5,7 +5,11 @@
       <Sort />
     </el-tab-pane>
     <el-tab-pane label="點測" name="probe">
+<<<<<<< HEAD
+      <!-- <Probe /> -->
+=======
       <Probe />
+>>>>>>> main
     </el-tab-pane>
   </el-tabs>
   <div class="footer">
@@ -56,8 +60,8 @@ watch(dialogTableVisible, (newValue, oldValue) => {
   }
 })
 
-win.api.receive('init', (data: any) => {
-  macAddress.value = data.macAddress ? data.macAddress : ''
+win.api.receive('macAddress', (data: string) => {
+  macAddress.value = data ? data : ''
 })
 
 win.api.receive('config:authorizationCode', (flag: boolean) => {

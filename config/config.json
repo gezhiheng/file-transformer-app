@@ -1,8 +1,8 @@
 {
   "authorization": "12a25cf06a8a7c34dfa072a7ec0acb3d",
-  "machineTimePath": "",
-  "alarmReportPath": "",
-  "machineTimeOutputPath": "",
-  "waferReportPath": "",
-  "waferReportOutputPath": ""
+  "sortMachineTimePath": "",
+  "sortAlarmReportPath": "",
+  "sortMachineTimeOutputPath": "",
+  "sortWaferReportPath": "",
+  "sortWaferReportOutputPath": ""
 }
