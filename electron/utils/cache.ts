@@ -15,7 +15,7 @@ function setCache(dateKey: string, fileName: string): boolean {
   try {
     if (fileStatus.isExist) {
       cache = JSON.parse(readFileSync(sourceCachePath, 'utf-8'))
-      if(cache[dateKey]) {
+      if (cache[dateKey]) {
         cache[dateKey].push(fileName)
       } else {
         cache[dateKey] = [fileName]
@@ -42,7 +42,7 @@ function getCache(): cache {
 
 function clearCache(date: string): boolean {
   let cache: cache = getCache()
-  Object.keys(cache).forEach(key => {
+  Object.keys(cache).forEach((key) => {
     if (key !== date) {
       delete cache[key]
     }
@@ -66,9 +66,4 @@ function checkCache(date: string, fileName: string): boolean {
   return false
 }
 
-export {
-  setCache,
-  getCache,
-  clearCache,
-  checkCache,
-}
+export { setCache, getCache, clearCache, checkCache }

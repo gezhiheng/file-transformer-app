@@ -6,12 +6,7 @@ import checkPathExists from './check-path-exists'
 import write2config from './write2config'
 import readConfig from './read-config'
 import saveLog from './save-log'
-import {
-  setCache,
-  getCache,
-  clearCache,
-  checkCache,
-} from './cache'
+import { setCache, getCache, clearCache, checkCache } from './cache'
 import { write2excel, readExcel } from './excel'
 
 export {

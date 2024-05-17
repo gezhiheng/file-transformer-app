@@ -24,7 +24,4 @@ function readExcel(filePath: string): any[] {
   return data
 }
 
-export {
-  write2excel,
-  readExcel,
-}
+export { write2excel, readExcel }
