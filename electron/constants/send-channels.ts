@@ -6,6 +6,7 @@ const sendChannels: string[] = [
   'sort:task:genWaferReportFile',
   'sort:saveLog',
   // 点测转档的发送channel
+  'probe:task:genMachineTimeFile',
 ]
 
 export default sendChannels

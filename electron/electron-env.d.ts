@@ -33,6 +33,22 @@ interface Config {
   sortMachineTimeOutputPath?: string
   sortWaferReportPath?: string
   sortWaferReportOutputPath?: string
+  probeMachineTimeMonitorPath?: string
+  probeMachineTimeBackupPath?: string
+  probeAlarmReportMonitorPath?: string
+  probeAlarmReportBackupPath?: string
+  probeMachineTimeOutputPath?: string
+  probeStandardPath?: string
+  probeDailyPath?: string
+  probeOutputPath?: string
+}
+
+interface ProbeMachineTimeFilePathObj {
+  probeMachineTimeMonitorPath: string
+  probeMachineTimeBackupPath: string
+  probeAlarmReportMonitorPath: string
+  probeAlarmReportBackupPath: string
+  probeMachineTimeOutputPath: string
 }
 
 interface InitData {
