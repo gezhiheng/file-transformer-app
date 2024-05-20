@@ -1,15 +1,11 @@
 <template>
   <img src="./assets/lumitek.jpg" alt="lumitek" />
-  <el-tabs v-model="activeName" class="tabs no-drag">
+  <el-tabs v-model="activeName" class="tabs">
     <el-tab-pane label="分選" name="sort">
-      <Sort />
+      <Sort @showDialog="dialogTableVisible = true" />
     </el-tab-pane>
     <el-tab-pane label="點測" name="probe">
-<<<<<<< HEAD
-      <!-- <Probe /> -->
-=======
-      <Probe />
->>>>>>> main
+      <Probe @showDialog="dialogTableVisible = true" />
     </el-tab-pane>
   </el-tabs>
   <div class="footer">
@@ -34,13 +30,21 @@
 
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue'
+import Swal from 'sweetalert2'
 import Sort from './components/Sort.vue'
 import Probe from './components/Probe.vue'
+import { authorizationStore } from './store'
 
 const win: any = window
 
 onMounted(() => {
   win.api.send('rendererFinishLoad')
+})
+
+const authorizationStoreInstance = authorizationStore()
+
+win.api.receive('isAuthorization', (data: boolean) => {
+  authorizationStoreInstance.setAuthorization(data)
 })
 
 const authorizationCode = ref<string>('')
@@ -67,15 +71,22 @@ win.api.receive('macAddress', (data: string) => {
 win.api.receive('config:authorizationCode', (flag: boolean) => {
   dialogTableVisible.value = false
   if (flag) {
-    alert('授權成功!')
+    authorizationStoreInstance.setAuthorization(flag)
+    Swal.fire({
+      icon: 'success',
+      title: '授權成功！',
+    })
   } else {
-    alert('錯誤：授權失敗，請聯係開發人員！')
+    Swal.fire({
+      icon: 'error',
+      title: '授權失敗！',
+      text: '請檢查授權碼，或聯係開發人員',
+    })
   }
 })
 
 const authorizationCodeBtnOnclick = () => {
   if (authorizationCode.value === '') {
-    alert('授權碼不能為空')
     return
   }
   win.api.send('authorizationCode', authorizationCode.value)
@@ -98,6 +109,7 @@ img {
 }
 
 .tabs {
+  -webkit-app-region: no-drag;
   margin: 0 12px;
 }
 

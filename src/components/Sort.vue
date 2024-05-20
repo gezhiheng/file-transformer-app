@@ -76,7 +76,13 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
+import Swal from 'sweetalert2'
+import { authorizationStore } from '../store'
+
+const authorizationStoreInstance = authorizationStore()
+
+const emits = defineEmits(['showDialog'])
 
 const win: any = window
 
@@ -98,9 +104,20 @@ const wrOutputBtnText = ref<string>(originWROutputBtnText)
 
 const log = ref<string>('')
 
-const showDialog = defineModel()
+const isAuthorization = () => {
+  let flag = true
+  if (!authorizationStoreInstance.isAuthorization) {
+    flag = false
+    emits('showDialog', true)
+    recordLog('當前MAC地址沒有授權')
+  }
+  return flag
+}
 
 const mt1BtnOnclick = async () => {
+  if (!isAuthorization()) {
+    return
+  }
   const filePath = await win.api.handle(
     'dialog:openDirectory',
     'sortMachineTimePath',
@@ -111,6 +128,9 @@ const mt1BtnOnclick = async () => {
 }
 
 const mt2BtnOnclick = async () => {
+  if (!isAuthorization()) {
+    return
+  }
   const filePath = await win.api.handle(
     'dialog:openDirectory',
     'sortAlarmReportPath',
@@ -121,6 +141,9 @@ const mt2BtnOnclick = async () => {
 }
 
 const mtOutputBtnOnclick = async () => {
+  if (!isAuthorization()) {
+    return
+  }
   const filePath = await win.api.handle(
     'dialog:openDirectory',
     'sortMachineTimeOutputPath',
@@ -131,6 +154,9 @@ const mtOutputBtnOnclick = async () => {
 }
 
 const wrBtnOnclick = async () => {
+  if (!isAuthorization()) {
+    return
+  }
   const filePath = await win.api.handle(
     'dialog:openDirectory',
     'sortWaferReportPath',
@@ -141,6 +167,9 @@ const wrBtnOnclick = async () => {
 }
 
 const wrOutputBtnOnclick = async () => {
+  if (!isAuthorization()) {
+    return
+  }
   const filePath = await win.api.handle(
     'dialog:openDirectory',
     'sortWaferReportOutputPath',
@@ -150,7 +179,7 @@ const wrOutputBtnOnclick = async () => {
   }
 }
 
-win.api.receive('sort:log', (data: string) => {
+const recordLog = (data: string) => {
   const timestamp = new Date().toLocaleString('zh-CN', {
     year: 'numeric',
     month: 'long',
@@ -159,37 +188,43 @@ win.api.receive('sort:log', (data: string) => {
     minute: '2-digit',
     second: '2-digit',
   })
-  if (data === '當前MAC地址沒有授權') {
-    showDialog.value = true
-  }
   log.value = `${timestamp}: ${data}\n${log.value}`
-})
+}
+
+win.api.receive('sort:log', recordLog)
 
 win.api.receive('sort:init', (data: any) => {
-  mt1BtnText.value = data.config.sortMachineTimePath
-    ? data.config.sortMachineTimePath
+  mt1BtnText.value = data.sortMachineTimePath
+    ? data.sortMachineTimePath
     : originMT1BtnText
-  mt2BtnText.value = data.config.sortAlarmReportPath
-    ? data.config.sortAlarmReportPath
+  mt2BtnText.value = data.sortAlarmReportPath
+    ? data.sortAlarmReportPath
     : originMT2BtnText
-  mtOutputBtnText.value = data.config.sortMachineTimeOutputPath
-    ? data.config.sortMachineTimeOutputPath
+  mtOutputBtnText.value = data.sortMachineTimeOutputPath
+    ? data.sortMachineTimeOutputPath
     : originMTOutputBtnText
-  wrBtnText.value = data.config.sortWaferReportPath
-    ? data.config.sortWaferReportPath
+  wrBtnText.value = data.sortWaferReportPath
+    ? data.sortWaferReportPath
     : originWRBtnText
-  wrOutputBtnText.value = data.config.sortWaferReportOutputPath
-    ? data.config.sortWaferReportOutputPath
+  wrOutputBtnText.value = data.sortWaferReportOutputPath
+    ? data.sortWaferReportOutputPath
     : originWROutputBtnText
 })
 
 const machineTimeBtnOnclick = () => {
+  if (!isAuthorization()) {
+    return
+  }
   if (
     mt1BtnText.value === originMT1BtnText ||
     mt2BtnText.value === originMT2BtnText ||
     mtOutputBtnText.value === originMTOutputBtnText
   ) {
-    alert('Machine Time 請补充轉換文件路徑')
+    Swal.fire({
+      icon: 'warning',
+      title: 'Machine Time',
+      text: '請补充轉換文件路徑',
+    })
     return
   }
   win.api.send('sort:task:genMachineTimeFile', {
@@ -201,11 +236,18 @@ const machineTimeBtnOnclick = () => {
 }
 
 const waferReportBtnOnclick = () => {
+  if (!isAuthorization()) {
+    return
+  }
   if (
     wrBtnText.value === originWRBtnText ||
     wrOutputBtnText.value === originWROutputBtnText
   ) {
-    alert('Wafer Report 請补充轉換文件路徑')
+    Swal.fire({
+      icon: 'warning',
+      title: 'Wafer Report',
+      text: '請补充轉換文件路徑',
+    })
     return
   }
   win.api.send('sort:task:genWaferReportFile', {

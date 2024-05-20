@@ -14,3 +14,7 @@
 .no-drag {
   -webkit-app-region: no-drag;
 }
+
+.swal2-confirm {
+  -webkit-app-region: no-drag;
+}

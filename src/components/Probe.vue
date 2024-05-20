@@ -3,43 +3,43 @@
     <div class="form" style="margin-right: 6px">
       <div class="title">點測轉檔, <span>Machine Time Report</span></div>
       <div class="btn-span-group">
-        <<<<<<< HEAD
         <span>{{ originMTMonitorText }}</span>
-        =======
-        <span>{{ originMT1BtnText }}</span>
-        >>>>>>> main
-        <button class="btn-input" id="mt-file-btn1" @click="mt1BtnOnclick">
-          {{ mt1BtnText }}
+        <button
+          class="btn-input"
+          id="mt-file-btn1"
+          @click="mtMonitorBtnOnclick"
+        >
+          {{ mtMonitorBtnText }}
         </button>
       </div>
       <div class="btn-span-group">
-        <span>{{ originMT2BtnText }}</span>
-        <button class="btn-input" id="mt-file-btn2" @click="mt2BtnOnclick">
-          {{ mt2BtnText }}
+        <span>{{ originMTBackupText }}</span>
+        <button class="btn-input" id="mt-file-btn2" @click="mtBackupBtnOnclick">
+          {{ mtBackupBtnText }}
         </button>
       </div>
       <div class="btn-span-group">
-        <span>{{ originMTOutputBtnText }}</span>
+        <span>{{ originALMonitorText }}</span>
         <button
           class="btn-input"
           id="mt-output-btn"
-          @click="mtOutputBtnOnclick"
+          @click="alMonitorBtnOnclick"
         >
-          {{ mtOutputBtnText }}
+          {{ alMonitorBtnText }}
         </button>
       </div>
       <div class="btn-span-group">
-        <span>{{ originMTOutputBtnText }}</span>
+        <span>{{ originALBackupText }}</span>
         <button
           class="btn-input"
           id="mt-output-btn"
-          @click="mtOutputBtnOnclick"
+          @click="alBackupBtnOnclick"
         >
-          {{ mtOutputBtnText }}
+          {{ alBackupBtnText }}
         </button>
       </div>
       <div class="btn-span-group">
-        <span>{{ originMTOutputBtnText }}</span>
+        <span>{{ originMTOutputText }}</span>
         <button
           class="btn-input"
           id="mt-output-btn"
@@ -61,29 +61,29 @@
     <div class="form" style="margin: 0 6px">
       <div class="title">點測轉檔,<br /><span>點測檔</span></div>
       <div class="btn-span-group">
-        <span>{{ originWRBtnText }}</span>
-        <button class="btn-input" id="wr-file-btn" @click="wrBtnOnclick">
-          {{ wrBtnText }}
+        <span>{{ originProbeStdText }}</span>
+        <button class="btn-input" id="wr-file-btn" @click="probeStdBtnOnclick">
+          {{ probeStdBtnText }}
         </button>
       </div>
       <div class="btn-span-group">
-        <span>{{ originWROutputBtnText }}</span>
+        <span>{{ originProbeDailyText }}</span>
         <button
           class="btn-input"
           id="wr-output-btn"
-          @click="wrOutputBtnOnclick"
+          @click="probeDailyBtnOnclick"
         >
-          {{ wrOutputBtnText }}
+          {{ probeDailyBtnText }}
         </button>
       </div>
       <div class="btn-span-group">
-        <span>{{ originWROutputBtnText }}</span>
+        <span>{{ originProbeOutputText }}</span>
         <button
           class="btn-input"
           id="wr-output-btn"
-          @click="wrOutputBtnOnclick"
+          @click="probeOutputBtnOnclick"
         >
-          {{ wrOutputBtnText }}
+          {{ probeOutputBtnText }}
         </button>
       </div>
       <div class="btn-group">
@@ -92,7 +92,7 @@
           id="wr-start-btn"
           @click="waferReportBtnOnclick"
         >
-          {{ wrStartBtnText }}
+          {{ pbStartBtnText }}
         </button>
         <!-- <button class="btn-confirm" id="wr-save-btn">保存路徑</button> -->
       </div>
@@ -110,111 +110,162 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
+import Swal from 'sweetalert2'
+import { authorizationStore } from '../store'
+
+const authorizationStoreInstance = authorizationStore()
+
+const emits = defineEmits(['showDialog'])
 
 const win: any = window
 
-<<<<<<< HEAD
-const originMTMonitorText = 'Machine Time 监控路徑'
+const originMTMonitorText = 'Machine Time 監控路徑'
 const originMTBackupText = 'Machine Time 备份路徑'
-const originALMonitorText = 'Alarm Report 监控路徑'
+const originALMonitorText = 'Alarm Report 監控路徑'
 const originALBackupText = 'Alarm Report 备份路徑'
 const originMTOutputText = 'Machine Time Report 產出'
 
 const originProbeStdText = '標準檔選擇'
 const originProbeDailyText = '日校檔選擇'
 const originProbeOutputText = 'Probe Report 產出'
-=======
-const originMT1BtnText = 'Machine Time 轉檔前路徑'
-const originMT2BtnText = 'Alarm Report 轉檔前路徑'
-const originMTOutputBtnText = 'Machine Time 轉檔後路徑'
-const originWRBtnText = 'Wafer Report 轉檔前路徑'
-const originWROutputBtnText = 'Wafer Report 轉檔後路徑'
->>>>>>> main
+
+const mtMonitorBtnText = ref<string>(originMTMonitorText)
+const mtBackupBtnText = ref<string>(originMTBackupText)
+const alMonitorBtnText = ref<string>(originALMonitorText)
+const alBackupBtnText = ref<string>(originALBackupText)
+const mtOutputBtnText = ref<string>(originMTOutputText)
+
+const probeStdBtnText = ref<string>(originProbeStdText)
+const probeDailyBtnText = ref<string>(originProbeDailyText)
+const probeOutputBtnText = ref<string>(originProbeOutputText)
 
 const mtStartBtnText = ref('開始')
-const wrStartBtnText = ref('開始')
-
-<<<<<<< HEAD
-const mt1BtnText = ref<string>(originMTMonitorText)
-=======
-const mt1BtnText = ref<string>(originMT1BtnText)
->>>>>>> main
-const mt2BtnText = ref<string>(originMT2BtnText)
-const mtOutputBtnText = ref<string>(originMTOutputBtnText)
-const mtCurrentProcessFile = ref<string>('')
-
-const wrBtnText = ref<string>(originWRBtnText)
-const wrOutputBtnText = ref<string>(originWROutputBtnText)
-const wrCurrentProcessFile = ref<string>('')
+const pbStartBtnText = ref('開始')
 
 const log = ref<string>('')
-const authorizationCode = ref<string>('')
-const dialogTableVisible = ref<boolean>(false)
 
-watch(dialogTableVisible, (newValue, oldValue) => {
-  if (newValue) {
-    document.querySelectorAll('*').forEach((item) => {
-      item.classList.add('no-drag')
-    })
-  } else {
-    document.querySelectorAll('*').forEach((item) => {
-      item.classList.remove('no-drag')
-    })
+const isAuthorization = () => {
+  let flag = true
+  if (!authorizationStoreInstance.isAuthorization) {
+    flag = false
+    emits('showDialog', true)
+    recordLog('當前MAC地址沒有授權')
   }
-})
+  return flag
+}
 
-const mt1BtnOnclick = async () => {
+/**
+ * machine time form 部分
+ */
+const mtMonitorBtnOnclick = async () => {
+  if (!isAuthorization()) {
+    return
+  }
   const filePath = await win.api.handle(
     'dialog:openDirectory',
-    'machineTimePath',
+    'probeMachineTimeMonitorPath',
   )
   if (filePath) {
-    mt1BtnText.value = filePath
+    mtMonitorBtnText.value = filePath
   }
 }
 
-const mt2BtnOnclick = async () => {
+const mtBackupBtnOnclick = async () => {
+  if (!isAuthorization()) {
+    return
+  }
   const filePath = await win.api.handle(
     'dialog:openDirectory',
-    'alarmReportPath',
+    'probeMachineTimeBackupPath',
   )
   if (filePath) {
-    mt2BtnText.value = filePath
+    mtBackupBtnText.value = filePath
+  }
+}
+
+const alMonitorBtnOnclick = async () => {
+  if (!isAuthorization()) {
+    return
+  }
+  const filePath = await win.api.handle(
+    'dialog:openDirectory',
+    'probeAlarmReportMonitorPath',
+  )
+  if (filePath) {
+    alMonitorBtnText.value = filePath
+  }
+}
+
+const alBackupBtnOnclick = async () => {
+  if (!isAuthorization()) {
+    return
+  }
+  const filePath = await win.api.handle(
+    'dialog:openDirectory',
+    'probeAlarmReportBackupPath',
+  )
+  if (filePath) {
+    alBackupBtnText.value = filePath
   }
 }
 
 const mtOutputBtnOnclick = async () => {
+  if (!isAuthorization()) {
+    return
+  }
   const filePath = await win.api.handle(
     'dialog:openDirectory',
-    'machineTimeOutputPath',
+    'probeMachineTimeOutputPath',
   )
   if (filePath) {
     mtOutputBtnText.value = filePath
   }
 }
 
-const wrBtnOnclick = async () => {
+/**
+ * probe form 部分
+ */
+const probeStdBtnOnclick = async () => {
+  if (!isAuthorization()) {
+    return
+  }
   const filePath = await win.api.handle(
     'dialog:openDirectory',
-    'waferReportPath',
+    'probeStandardPath',
   )
   if (filePath) {
-    wrBtnText.value = filePath
+    probeStdBtnText.value = filePath
   }
 }
 
-const wrOutputBtnOnclick = async () => {
+const probeDailyBtnOnclick = async () => {
+  if (!isAuthorization()) {
+    return
+  }
   const filePath = await win.api.handle(
     'dialog:openDirectory',
-    'waferReportOutputPath',
+    'probeDailyPath',
   )
   if (filePath) {
-    wrOutputBtnText.value = filePath
+    probeDailyBtnText.value = filePath
   }
 }
 
-win.api.receive('log', (data: string) => {
+const probeOutputBtnOnclick = async () => {
+  if (!isAuthorization()) {
+    return
+  }
+  const filePath = await win.api.handle(
+    'dialog:openDirectory',
+    'probeOutputPath',
+  )
+  if (filePath) {
+    probeOutputBtnText.value = filePath
+  }
+}
+
+const recordLog = (data: string) => {
   const timestamp = new Date().toLocaleString('zh-CN', {
     year: 'numeric',
     month: 'long',
@@ -223,85 +274,87 @@ win.api.receive('log', (data: string) => {
     minute: '2-digit',
     second: '2-digit',
   })
-  if (data === '當前MAC地址沒有授權') {
-    dialogTableVisible.value = true
-  }
   log.value = `${timestamp}: ${data}\n${log.value}`
+}
+
+win.api.receive('probe:log', recordLog)
+
+win.api.receive('probe:init', (data: any) => {
+  mtMonitorBtnText.value = data.probeMachineTimeMonitorPath
+    ? data.probeMachineTimeMonitorPath
+    : originMTMonitorText
+  mtBackupBtnText.value = data.probeMachineTimeBackupPath
+    ? data.probeMachineTimeBackupPath
+    : originMTBackupText
+  alMonitorBtnText.value = data.probeAlarmReportMonitorPath
+    ? data.probeAlarmReportMonitorPath
+    : originALMonitorText
+  alBackupBtnText.value = data.probeAlarmReportBackupPath
+    ? data.probeAlarmReportBackupPath
+    : originALBackupText
+  mtOutputBtnText.value = data.probeMachineTimeOutputPath
+    ? data.probeMachineTimeOutputPath
+    : originMTOutputText
+
+  probeStdBtnText.value = data.probeStandardPath
+    ? data.probeStandardPath
+    : originProbeStdText
+  probeDailyBtnText.value = data.probeDailyPath
+    ? data.probeDailyPath
+    : originProbeDailyText
+  probeOutputBtnText.value = data.probeOutputPath
+    ? data.probeOutputPath
+    : originProbeOutputText
 })
 
-win.api.receive('init', (data: any) => {
-  mt1BtnText.value = data.config.machineTimePath
-    ? data.config.machineTimePath
-    : originMT1BtnText
-  mt2BtnText.value = data.config.alarmReportPath
-    ? data.config.alarmReportPath
-    : originMT2BtnText
-  mtOutputBtnText.value = data.config.machineTimeOutputPath
-    ? data.config.machineTimeOutputPath
-    : originMTOutputBtnText
-  wrBtnText.value = data.config.waferReportPath
-    ? data.config.waferReportPath
-    : originWRBtnText
-  wrOutputBtnText.value = data.config.waferReportOutputPath
-    ? data.config.waferReportOutputPath
-    : originWROutputBtnText
-})
-
-win.api.receive('mtCurrentProcessFile', (data: string) => {
-  mtCurrentProcessFile.value = data
-})
-
-win.api.receive('wrCurrentProcessFile', (data: string) => {
-  wrCurrentProcessFile.value = data
-})
-
-win.api.receive('config:authorizationCode', (flag: boolean) => {
-  dialogTableVisible.value = false
-  if (flag) {
-    alert('授權成功!')
-  } else {
-    alert('錯誤：授權失敗，請聯係開發人員！')
-  }
+win.api.receive('probe:update', (data: any) => {
+  probeOutputBtnText.value = data.probeOutputPath
 })
 
 const machineTimeBtnOnclick = () => {
-  if (
-    mt1BtnText.value === originMT1BtnText ||
-    mt2BtnText.value === originMT2BtnText ||
-    mtOutputBtnText.value === originMTOutputBtnText
-  ) {
-    alert('Machine Time 請补充轉換文件路徑')
+  if (!isAuthorization()) {
     return
   }
-  win.api.send('task:genMachineTimeFile', {
-    mtFilePath1: mt1BtnText.value,
-    mtFilePath2: mt2BtnText.value,
-    mtOutputPath: mtOutputBtnText.value,
+  if (
+    mtMonitorBtnText.value === originMTMonitorText ||
+    mtBackupBtnText.value === originMTBackupText ||
+    alMonitorBtnText.value === originALMonitorText ||
+    alBackupBtnText.value === originALBackupText ||
+    mtOutputBtnText.value === originMTOutputText
+  ) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Machine Time',
+      text: '請补充轉換文件路徑',
+    })
+    return
+  }
+  win.api.send('probe:task:genMachineTimeFile', {
+    probeMachineTimeMonitorPath: mtMonitorBtnText.value,
+    probeMachineTimeBackupPath: mtBackupBtnText.value,
+    probeAlarmReportMonitorPath: alMonitorBtnText.value,
+    probeAlarmReportBackupPath: alBackupBtnText.value,
+    probeMachineTimeOutputPath: mtOutputBtnText.value,
   })
   mtStartBtnText.value = '已啓動'
 }
 
 const waferReportBtnOnclick = () => {
-  if (
-    wrBtnText.value === originWRBtnText ||
-    wrOutputBtnText.value === originWROutputBtnText
-  ) {
-    alert('Wafer Report 請补充轉換文件路徑')
+  if (!isAuthorization()) {
     return
   }
-  win.api.send('task:genWaferReportFile', {
-    wrFilePath: wrBtnText.value,
-    wrOutputPath: wrOutputBtnText.value,
-  })
-  wrStartBtnText.value = '已啓動'
-}
-
-const authorizationCodeBtnOnclick = () => {
-  if (authorizationCode.value === '') {
-    alert('授權碼不能為空')
-    return
-  }
-  win.api.send('authorizationCode', authorizationCode.value)
+  // if (
+  //   wrBtnText.value === originWRBtnText ||
+  //   wrOutputBtnText.value === originWROutputBtnText
+  // ) {
+  //   alert('Wafer Report 請补充轉換文件路徑')
+  //   return
+  // }
+  // win.api.send('task:genWaferReportFile', {
+  //   wrFilePath: wrBtnText.value,
+  //   wrOutputPath: wrOutputBtnText.value,
+  // })
+  // wrStartBtnText.value = '已啓動'
 }
 
 const saveLogBtnOnclick = () => {
