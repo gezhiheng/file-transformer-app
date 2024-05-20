@@ -5,7 +5,7 @@ import { scheduleJob } from 'node-schedule'
 import { cloneDeep } from 'lodash'
 import { detect } from 'jschardet'
 import { decodeStream } from 'iconv-lite'
-import { originMachineTimeExcelData } from '../../constants'
+import originMachineTimeExcelData from './originMachineTimeExcelData'
 import { getTodayDate, checkPathExists, write2excel } from '../../utils'
 
 let filePathObj
