@@ -1,5 +1,6 @@
 const receiveChannels: string[] = [
   'config:authorizationCode',
+  'macAddress',
   'isAuthorization',
   // 分选转档的接受channel
   'sort:init',
