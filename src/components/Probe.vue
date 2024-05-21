@@ -13,9 +13,9 @@
         </button>
       </div>
       <div class="btn-span-group">
-        <span>{{ originMTBackupText }}</span>
-        <button class="btn-input" id="mt-file-btn2" @click="mtBackupBtnOnclick">
-          {{ mtBackupBtnText }}
+        <span>{{ originMTMoveText }}</span>
+        <button class="btn-input" id="mt-file-btn2" @click="mtMoveBtnOnclick">
+          {{ mtMoveBtnText }}
         </button>
       </div>
       <div class="btn-span-group">
@@ -29,13 +29,13 @@
         </button>
       </div>
       <div class="btn-span-group">
-        <span>{{ originALBackupText }}</span>
+        <span>{{ originALMoveText }}</span>
         <button
           class="btn-input"
           id="mt-output-btn"
-          @click="alBackupBtnOnclick"
+          @click="alMoveBtnOnclick"
         >
-          {{ alBackupBtnText }}
+          {{ alMoveBtnText }}
         </button>
       </div>
       <div class="btn-span-group">
@@ -121,9 +121,9 @@ const emits = defineEmits(['showDialog'])
 const win: any = window
 
 const originMTMonitorText = 'Machine Time 監控路徑'
-const originMTBackupText = 'Machine Time 备份路徑'
+const originMTMoveText = 'Machine Time 搬檔路徑'
 const originALMonitorText = 'Alarm Report 監控路徑'
-const originALBackupText = 'Alarm Report 备份路徑'
+const originALMoveText = 'Alarm Report 搬檔路徑'
 const originMTOutputText = 'Machine Time Report 產出'
 
 const originProbeStdText = '標準檔選擇'
@@ -131,9 +131,9 @@ const originProbeDailyText = '日校檔選擇'
 const originProbeOutputText = 'Probe Report 產出'
 
 const mtMonitorBtnText = ref<string>(originMTMonitorText)
-const mtBackupBtnText = ref<string>(originMTBackupText)
+const mtMoveBtnText = ref<string>(originMTMoveText)
 const alMonitorBtnText = ref<string>(originALMonitorText)
-const alBackupBtnText = ref<string>(originALBackupText)
+const alMoveBtnText = ref<string>(originALMoveText)
 const mtOutputBtnText = ref<string>(originMTOutputText)
 
 const probeStdBtnText = ref<string>(originProbeStdText)
@@ -171,16 +171,16 @@ const mtMonitorBtnOnclick = async () => {
   }
 }
 
-const mtBackupBtnOnclick = async () => {
+const mtMoveBtnOnclick = async () => {
   if (!isAuthorization()) {
     return
   }
   const filePath = await win.api.handle(
     'dialog:openDirectory',
-    'probeMachineTimeBackupPath',
+    'probeMachineTimeMovePath',
   )
   if (filePath) {
-    mtBackupBtnText.value = filePath
+    mtMoveBtnText.value = filePath
   }
 }
 
@@ -197,16 +197,16 @@ const alMonitorBtnOnclick = async () => {
   }
 }
 
-const alBackupBtnOnclick = async () => {
+const alMoveBtnOnclick = async () => {
   if (!isAuthorization()) {
     return
   }
   const filePath = await win.api.handle(
     'dialog:openDirectory',
-    'probeAlarmReportBackupPath',
+    'probeAlarmReportMovePath',
   )
   if (filePath) {
-    alBackupBtnText.value = filePath
+    alMoveBtnText.value = filePath
   }
 }
 
@@ -283,15 +283,15 @@ win.api.receive('probe:init', (data: any) => {
   mtMonitorBtnText.value = data.probeMachineTimeMonitorPath
     ? data.probeMachineTimeMonitorPath
     : originMTMonitorText
-  mtBackupBtnText.value = data.probeMachineTimeBackupPath
-    ? data.probeMachineTimeBackupPath
-    : originMTBackupText
+  mtMoveBtnText.value = data.probeMachineTimeMovePath
+    ? data.probeMachineTimeMovePath
+    : originMTMoveText
   alMonitorBtnText.value = data.probeAlarmReportMonitorPath
     ? data.probeAlarmReportMonitorPath
     : originALMonitorText
-  alBackupBtnText.value = data.probeAlarmReportBackupPath
-    ? data.probeAlarmReportBackupPath
-    : originALBackupText
+  alMoveBtnText.value = data.probeAlarmReportMovePath
+    ? data.probeAlarmReportMovePath
+    : originALMoveText
   mtOutputBtnText.value = data.probeMachineTimeOutputPath
     ? data.probeMachineTimeOutputPath
     : originMTOutputText
@@ -317,9 +317,9 @@ const machineTimeBtnOnclick = () => {
   }
   if (
     mtMonitorBtnText.value === originMTMonitorText ||
-    mtBackupBtnText.value === originMTBackupText ||
+    mtMoveBtnText.value === originMTMoveText ||
     alMonitorBtnText.value === originALMonitorText ||
-    alBackupBtnText.value === originALBackupText ||
+    alMoveBtnText.value === originALMoveText ||
     mtOutputBtnText.value === originMTOutputText
   ) {
     Swal.fire({
@@ -331,9 +331,9 @@ const machineTimeBtnOnclick = () => {
   }
   win.api.send('probe:task:genMachineTimeFile', {
     probeMachineTimeMonitorPath: mtMonitorBtnText.value,
-    probeMachineTimeBackupPath: mtBackupBtnText.value,
+    probeMachineTimeMovePath: mtMoveBtnText.value,
     probeAlarmReportMonitorPath: alMonitorBtnText.value,
-    probeAlarmReportBackupPath: alBackupBtnText.value,
+    probeAlarmReportMovePath: alMoveBtnText.value,
     probeMachineTimeOutputPath: mtOutputBtnText.value,
   })
   mtStartBtnText.value = '已啓動'

@@ -34,9 +34,9 @@ interface Config {
   sortWaferReportPath?: string
   sortWaferReportOutputPath?: string
   probeMachineTimeMonitorPath?: string
-  probeMachineTimeBackupPath?: string
+  probeMachineTimeMovePath?: string
   probeAlarmReportMonitorPath?: string
-  probeAlarmReportBackupPath?: string
+  probeAlarmReportMovePath?: string
   probeMachineTimeOutputPath?: string
   probeStandardPath?: string
   probeDailyPath?: string
@@ -45,9 +45,9 @@ interface Config {
 
 interface ProbeMachineTimeFilePathObj {
   probeMachineTimeMonitorPath: string
-  probeMachineTimeBackupPath: string
+  probeMachineTimeMovePath: string
   probeAlarmReportMonitorPath: string
-  probeAlarmReportBackupPath: string
+  probeAlarmReportMovePath: string
   probeMachineTimeOutputPath: string
 }
 

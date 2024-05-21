@@ -9,14 +9,14 @@ function probeService(mainWindow: BrowserWindow) {
     probeMachineTimeMonitorPath: config.probeMachineTimeMonitorPath
       ? config.probeMachineTimeMonitorPath
       : '',
-    probeMachineTimeBackupPath: config.probeMachineTimeBackupPath
-      ? config.probeMachineTimeBackupPath
+    probeMachineTimeMovePath: config.probeMachineTimeMovePath
+      ? config.probeMachineTimeMovePath
       : '',
     probeAlarmReportMonitorPath: config.probeAlarmReportMonitorPath
       ? config.probeAlarmReportMonitorPath
       : '',
-    probeAlarmReportBackupPath: config.probeAlarmReportBackupPath
-      ? config.probeAlarmReportBackupPath
+    probeAlarmReportMovePath: config.probeAlarmReportMovePath
+      ? config.probeAlarmReportMovePath
       : '',
     probeMachineTimeOutputPath: config.probeMachineTimeOutputPath
       ? config.probeMachineTimeOutputPath
