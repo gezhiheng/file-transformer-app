@@ -100,7 +100,7 @@ function onReadLine(rl, fileName) {
       excelDataArray.push(getInitArray())
       pendingCacheFileNames.push(fileName)
       formatFileNameData(fileName)
-      excelDataArray[excelDataArray.length - 1][2] = line.split('-')[1]
+      excelDataArray[excelDataArray.length - 1][2] = getWaferID(fileName)
     } else if (line.startsWith('Machine No')) {
       excelDataArray[excelDataArray.length - 1][3] =
         tmpArray[tmpArray.length - 1]
@@ -119,6 +119,21 @@ function onReadLine(rl, fileName) {
       excelDataArray[excelDataArray.length - 1][7] = totalYield
     }
   })
+}
+
+function getWaferID(fileName) {
+  let resultArray = []
+  const array = fileName.split('-')
+  for (let i = 0; i < array.length; i++) {
+    if (i === 0) {
+      continue
+    }
+    if(array[i].includes(executionDate)) {
+      break
+    }
+    resultArray.push(array[i])
+  }
+  return resultArray.join('-')
 }
 
 function onReadClose(rl) {
