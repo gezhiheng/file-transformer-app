@@ -299,7 +299,7 @@ const saveLogBtnOnclick = () => {
   margin-bottom: 25px;
 }
 
-.title span {
+span {
   -webkit-app-region: no-drag;
   color: var(--font-color-sub);
   font-weight: 600;

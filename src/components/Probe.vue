@@ -30,11 +30,7 @@
       </div>
       <div class="btn-span-group">
         <span>{{ originALMoveText }}</span>
-        <button
-          class="btn-input"
-          id="mt-output-btn"
-          @click="alMoveBtnOnclick"
-        >
+        <button class="btn-input" id="mt-output-btn" @click="alMoveBtnOnclick">
           {{ alMoveBtnText }}
         </button>
       </div>
@@ -398,7 +394,7 @@ const saveLogBtnOnclick = () => {
   font-size: 20px;
 }
 
-.title span {
+span {
   -webkit-app-region: no-drag;
   color: var(--font-color-sub);
   font-weight: 600;
