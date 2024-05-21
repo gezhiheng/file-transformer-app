@@ -1,13 +1,13 @@
 {
   "name": "file-transformer",
   "productName": "File Transformer",
-  "version": "1.2.3",
+  "version": "2.0.0",
   "description": "File Transformer",
   "main": ".vite/build/main.js",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
-    "make": "electron-forge make",
+    "make": "electron-forge make --platform=win32 --arch=ia32",
     "publish": "electron-forge publish",
     "lint": "eslint --ext .ts,.tsx .",
     "format": "prettier --write ."
