@@ -128,7 +128,7 @@ function getWaferID(fileName) {
     if (i === 0) {
       continue
     }
-    if(array[i].includes(executionDate)) {
+    if (array[i].includes(executionDate)) {
       break
     }
     resultArray.push(array[i])
