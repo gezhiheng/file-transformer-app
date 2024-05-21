@@ -44,11 +44,11 @@ interface Config {
 }
 
 interface ProbeMachineTimeFilePathObj {
-  probeMachineTimeMonitorPath: string
-  probeMachineTimeMovePath: string
-  probeAlarmReportMonitorPath: string
-  probeAlarmReportMovePath: string
-  probeMachineTimeOutputPath: string
+  machineTimeMonitorPath: string
+  machineTimeMovePath: string
+  alarmReportMonitorPath: string
+  alarmReportMovePath: string
+  machineTimeOutputPath: string
 }
 
 interface InitData {

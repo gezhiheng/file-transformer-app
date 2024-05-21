@@ -330,11 +330,11 @@ const machineTimeBtnOnclick = () => {
     return
   }
   win.api.send('probe:task:genMachineTimeFile', {
-    probeMachineTimeMonitorPath: mtMonitorBtnText.value,
-    probeMachineTimeMovePath: mtMoveBtnText.value,
-    probeAlarmReportMonitorPath: alMonitorBtnText.value,
-    probeAlarmReportMovePath: alMoveBtnText.value,
-    probeMachineTimeOutputPath: mtOutputBtnText.value,
+    machineTimeMonitorPath: mtMonitorBtnText.value,
+    machineTimeMovePath: mtMoveBtnText.value,
+    alarmReportMonitorPath: alMonitorBtnText.value,
+    alarmReportMovePath: alMoveBtnText.value,
+    machineTimeOutputPath: mtOutputBtnText.value,
   })
   mtStartBtnText.value = '已啓動'
 }
