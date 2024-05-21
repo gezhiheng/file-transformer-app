@@ -1,8 +1,9 @@
 import { build, parse } from 'node-xlsx'
 import { writeFileSync } from 'fs'
 import checkPathExists from './check-path-exists'
+import type { WorkSheet } from 'node-xlsx'
 
-function write2excel(filePath: string, data: any[]): boolean {
+function write2excel(filePath: string, data: WorkSheet[]): boolean {
   let success = true
   const buffer = build(data)
   try {
