@@ -10,7 +10,7 @@ import {
   setCache,
   checkCache,
 } from '../../utils'
-import originWaferReportExcelData from './originWaferReportExcelData'
+import originWaferReportExcelData from './origin-wafer-report-excel-data'
 
 let filePathObj
 let win
