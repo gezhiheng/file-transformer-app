@@ -125,7 +125,7 @@ function subtract(str1: string, str2: string): number {
 
   const result: number = Math.abs(num1 - num2) // 计算绝对值差
 
-  return parseFloat(result.toFixed(3)) // 将结果保留两位小数并返回
+  return parseFloat(result.toFixed(3)) // 将结果保留三位小数并返回
 }
 
 export default genProbeFile
