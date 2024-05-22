@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="row">
-      <div class="form" style="margin-right: 6px; min-height: 500px;">
+      <div class="form" style="margin-right: 6px; min-height: 500px">
         <div class="title">點測轉檔, Machine Time Report</div>
         <div class="btn-span-group">
           <span>{{ originMTMonitorText }}</span>

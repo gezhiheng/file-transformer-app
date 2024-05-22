@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="row">
-      <div class="form" style="margin-right: 6px; min-height: 500px;">
+      <div class="form" style="margin-right: 6px; min-height: 500px">
         <div class="title">分選轉檔, Machine Time</div>
         <div class="btn-span-group">
           <span>{{ originMT1BtnText }}</span>
