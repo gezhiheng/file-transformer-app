@@ -32,6 +32,19 @@ function service(mainWindow: BrowserWindow) {
     }
   })
 
+  ipcMain.handle('dialog:openFile', async () => {
+    if (!isAuthorization) {
+      return
+    }
+    const { canceled, filePaths } = await dialog.showOpenDialog({
+      properties: ['openFile'],
+    })
+    if (!canceled) {
+      const filePath = filePaths[0]
+      return filePath
+    }
+  })
+
   sortService(mainWindow)
 
   probeService(mainWindow)

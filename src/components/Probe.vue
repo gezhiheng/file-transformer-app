@@ -95,7 +95,7 @@
           <button
             class="btn-confirm"
             id="wr-start-btn"
-            @click="startPBTaskBtnOnclick"
+            @click="genPBFileBtnOnclick"
           >
             {{ pbStartBtnText }}
           </button>
@@ -237,10 +237,7 @@ const probeStdBtnOnclick = async () => {
   if (!isAuthorization()) {
     return
   }
-  const filePath = await win.api.handle(
-    'dialog:openDirectory',
-    'probeStandardPath',
-  )
+  const filePath = await win.api.handle('dialog:openFile')
   if (filePath) {
     probeStdBtnText.value = filePath
   }
@@ -250,10 +247,7 @@ const probeDailyBtnOnclick = async () => {
   if (!isAuthorization()) {
     return
   }
-  const filePath = await win.api.handle(
-    'dialog:openDirectory',
-    'probeDailyPath',
-  )
+  const filePath = await win.api.handle('dialog:openFile')
   if (filePath) {
     probeDailyBtnText.value = filePath
   }
@@ -318,7 +312,7 @@ win.api.receive('probe:update', (data: any) => {
   probeOutputBtnText.value = data.probeOutputPath
 })
 
-const machineTimeBtnOnclick = () => {
+const startMTTaskBtnOnclick = () => {
   if (!isAuthorization()) {
     return
   }
@@ -346,22 +340,27 @@ const machineTimeBtnOnclick = () => {
   mtStartBtnText.value = '已啓動'
 }
 
-const waferReportBtnOnclick = () => {
+const genPBFileBtnOnclick = () => {
   if (!isAuthorization()) {
     return
   }
-  // if (
-  //   wrBtnText.value === originWRBtnText ||
-  //   wrOutputBtnText.value === originWROutputBtnText
-  // ) {
-  //   alert('Wafer Report 請补充轉換文件路徑')
-  //   return
-  // }
-  // win.api.send('task:genWaferReportFile', {
-  //   wrFilePath: wrBtnText.value,
-  //   wrOutputPath: wrOutputBtnText.value,
-  // })
-  // wrStartBtnText.value = '已啓動'
+  if (
+    probeStdBtnText.value === originProbeStdText ||
+    probeDailyBtnText.value === originProbeDailyText ||
+    probeOutputBtnText.value === originProbeOutputText
+  ) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Probe',
+      text: '請补充轉換文件路徑',
+    })
+    return
+  }
+  win.api.send('probe:genProbeFile', {
+    probeStandardPath: probeStdBtnText.value,
+    probeDailyPath: probeDailyBtnText.value,
+    probeOutputPath: probeOutputBtnText.value,
+  })
 }
 
 const saveLogBtnOnclick = () => {

@@ -7,6 +7,7 @@ const sendChannels: string[] = [
   'sort:saveLog',
   // 点测转档的发送channel
   'probe:task:genMachineTimeFile',
+  'probe:genProbeFile',
 ]
 
 export default sendChannels

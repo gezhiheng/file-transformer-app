@@ -2,6 +2,7 @@ import { ipcMain } from 'electron'
 import type { BrowserWindow } from 'electron'
 import { saveLog, readConfig, checkAuthorization } from 'e/utils'
 import runGenMachineTimeFileTask from './gen-machine-time-file-task'
+import genProbeFile from './gen-probe-report-file'
 
 function probeService(mainWindow: BrowserWindow) {
   const config = readConfig()
@@ -32,6 +33,15 @@ function probeService(mainWindow: BrowserWindow) {
     }
     runGenMachineTimeFileTask(filePathObj, mainWindow)
   })
+
+  ipcMain.on('probe:genProbeFile', (event, filePathObj) => {
+    if (!checkAuthorization()) {
+      return
+    }
+    genProbeFile(filePathObj, mainWindow)
+  })
+
+  // TODO 保存日志
 }
 
 export default probeService

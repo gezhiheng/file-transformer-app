@@ -51,6 +51,12 @@ interface ProbeMachineTimeFilePathObj {
   machineTimeOutputPath: string
 }
 
+interface ProbeProbeFilePathObj {
+  probeStandardPath: string
+  probeDailyPath: string
+  probeOutputPath: string
+}
+
 interface InitData {
   config: Config
   macAddress: string
