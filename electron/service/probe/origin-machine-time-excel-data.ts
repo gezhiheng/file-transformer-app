@@ -1,7 +1,7 @@
 import type { WorkSheet } from 'node-xlsx'
 
 const worksheet: WorkSheet = {
-  name: 'machineTime',
+  name: 'Machine Time',
   data: [
     [
       '机台号',
