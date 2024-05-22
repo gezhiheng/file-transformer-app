@@ -14,8 +14,8 @@ const createWindow = () => {
   mainWindow = new BrowserWindow({
     width: 1500,
     height: 990,
-    resizable: false,
-    maximizable: false,
+    // resizable: false,
+    // maximizable: false,
     titleBarStyle: 'hidden',
     titleBarOverlay: {
       color: '#fff',

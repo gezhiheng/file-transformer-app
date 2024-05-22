@@ -11,6 +11,15 @@
   font-family: 'alibaba';
 }
 
+body {
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+#app {
+  margin-bottom: 80px;
+}
+
 .no-drag {
   -webkit-app-region: no-drag;
 }

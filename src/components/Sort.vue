@@ -1,77 +1,81 @@
 <template>
   <div class="container">
-    <div class="form" style="margin-right: 6px">
-      <div class="title">分選轉檔,<br /><span>Machine Time</span></div>
-      <div class="btn-span-group">
-        <span>{{ originMT1BtnText }}</span>
-        <button class="btn-input" id="mt-file-btn1" @click="mt1BtnOnclick">
-          {{ mt1BtnText }}
-        </button>
+    <div class="row">
+      <div class="form" style="margin-right: 6px; min-height: 500px;">
+        <div class="title">分選轉檔, Machine Time</div>
+        <div class="btn-span-group">
+          <span>{{ originMT1BtnText }}</span>
+          <button class="btn-input" id="mt-file-btn1" @click="mt1BtnOnclick">
+            {{ mt1BtnText }}
+          </button>
+        </div>
+        <div class="btn-span-group">
+          <span>{{ originMT2BtnText }}</span>
+          <button class="btn-input" id="mt-file-btn2" @click="mt2BtnOnclick">
+            {{ mt2BtnText }}
+          </button>
+        </div>
+        <div class="btn-span-group">
+          <span>{{ originMTOutputBtnText }}</span>
+          <button
+            class="btn-input"
+            id="mt-output-btn"
+            @click="mtOutputBtnOnclick"
+          >
+            {{ mtOutputBtnText }}
+          </button>
+        </div>
+        <div class="btn-group">
+          <button
+            class="btn-confirm"
+            id="mt-start-btn"
+            @click="machineTimeBtnOnclick"
+          >
+            {{ mtStartBtnText }}
+          </button>
+        </div>
       </div>
-      <div class="btn-span-group">
-        <span>{{ originMT2BtnText }}</span>
-        <button class="btn-input" id="mt-file-btn2" @click="mt2BtnOnclick">
-          {{ mt2BtnText }}
-        </button>
-      </div>
-      <div class="btn-span-group">
-        <span>{{ originMTOutputBtnText }}</span>
-        <button
-          class="btn-input"
-          id="mt-output-btn"
-          @click="mtOutputBtnOnclick"
-        >
-          {{ mtOutputBtnText }}
-        </button>
-      </div>
-      <div class="btn-group">
-        <button
-          class="btn-confirm"
-          id="mt-start-btn"
-          @click="machineTimeBtnOnclick"
-        >
-          {{ mtStartBtnText }}
-        </button>
+      <div class="form" style="margin: 0 6px">
+        <div class="title">分選轉檔, Wafer Report</div>
+        <div class="btn-span-group">
+          <span>{{ originWRBtnText }}</span>
+          <button class="btn-input" id="wr-file-btn" @click="wrBtnOnclick">
+            {{ wrBtnText }}
+          </button>
+        </div>
+        <div class="btn-span-group">
+          <span>{{ originWROutputBtnText }}</span>
+          <button
+            class="btn-input"
+            id="wr-output-btn"
+            @click="wrOutputBtnOnclick"
+          >
+            {{ wrOutputBtnText }}
+          </button>
+        </div>
+        <div class="btn-group">
+          <button
+            class="btn-confirm"
+            id="wr-start-btn"
+            @click="waferReportBtnOnclick"
+          >
+            {{ wrStartBtnText }}
+          </button>
+          <!-- <button class="btn-confirm" id="wr-save-btn">保存路徑</button> -->
+        </div>
       </div>
     </div>
-    <div class="form" style="margin: 0 6px">
-      <div class="title">分選轉檔,<br /><span>Wafer Report</span></div>
-      <div class="btn-span-group">
-        <span>{{ originWRBtnText }}</span>
-        <button class="btn-input" id="wr-file-btn" @click="wrBtnOnclick">
-          {{ wrBtnText }}
-        </button>
-      </div>
-      <div class="btn-span-group">
-        <span>{{ originWROutputBtnText }}</span>
-        <button
-          class="btn-input"
-          id="wr-output-btn"
-          @click="wrOutputBtnOnclick"
-        >
-          {{ wrOutputBtnText }}
-        </button>
-      </div>
-      <div class="btn-group">
-        <button
-          class="btn-confirm"
-          id="wr-start-btn"
-          @click="waferReportBtnOnclick"
-        >
-          {{ wrStartBtnText }}
-        </button>
-        <!-- <button class="btn-confirm" id="wr-save-btn">保存路徑</button> -->
+    <div class="row">
+      <div class="form log">
+        <div class="title log-title">
+          Log, <br /><span>History & Exception</span><br />
+        </div>
+        <textarea id="log-textarea" readonly="true" cols="30" rows="10">{{
+          log
+        }}</textarea>
+        <button class="btn-confirm" @click="saveLogBtnOnclick">保存日志</button>
       </div>
     </div>
-  </div>
-  <div class="form log">
-    <div class="title log-title">
-      Log, <br /><span>History & Exception</span><br />
-    </div>
-    <textarea id="log-textarea" readonly="true" cols="30" rows="10">{{
-      log
-    }}</textarea>
-    <button class="btn-confirm" @click="saveLogBtnOnclick">保存日志</button>
   </div>
 </template>
 
@@ -263,156 +267,5 @@ const saveLogBtnOnclick = () => {
 </script>
 
 <style scoped>
-.container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: row;
-}
-
-.form {
-  display: block;
-  width: 50%;
-  height: 500px;
-  --input-focus: #2d8cf0;
-  --font-color: #323232;
-  --font-color-sub: #666;
-  --bg-color: #fff;
-  --main-color: #323232;
-  padding: 20px;
-  background: lightgrey;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 20px;
-  border-radius: 5px;
-  border: 2px solid var(--main-color);
-  box-shadow: 4px 4px var(--main-color);
-}
-
-.title {
-  -webkit-app-region: no-drag;
-  color: var(--font-color);
-  font-weight: 900;
-  font-size: 20px;
-  margin-bottom: 25px;
-}
-
-span {
-  -webkit-app-region: no-drag;
-  color: var(--font-color-sub);
-  font-weight: 600;
-  font-size: 17px;
-}
-
-.btn-span-group {
-  width: 100%;
-  span {
-    color: var(--font-color-sub);
-  }
-}
-
-.btn-input {
-  -webkit-app-region: no-drag;
-  width: 100%;
-  height: 40px;
-  border-radius: 5px;
-  border: 2px solid var(--main-color);
-  background-color: var(--bg-color);
-  box-shadow: 4px 4px var(--main-color);
-  font-size: 17px;
-  font-weight: 600;
-  color: var(--font-color);
-  padding: 5px 10px;
-  outline: none;
-  cursor: pointer;
-}
-
-.btn-confirm:active,
-.btn-input:active {
-  box-shadow: 0px 0px var(--main-color);
-  transform: translate(3px, 3px);
-}
-
-.btn-confirm {
-  -webkit-app-region: no-drag;
-  margin-right: 6px;
-  width: 120px;
-  height: 40px;
-  border-radius: 5px;
-  border: 2px solid var(--main-color);
-  background-color: var(--bg-color);
-  box-shadow: 4px 4px var(--main-color);
-  font-size: 17px;
-  font-weight: 600;
-  color: var(--font-color);
-  cursor: pointer;
-}
-
-.btn-confirm:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.current-process-file {
-  -webkit-app-region: no-drag;
-  background-color: transparent;
-  border: 0;
-  border-bottom: 2px #000000 solid;
-  display: block;
-  padding: 15px 0;
-  font-size: 18px;
-  color: #000000;
-}
-
-.footer {
-  position: fixed;
-  bottom: 7px;
-  width: 100%;
-  font-size: 14px;
-  opacity: 0.5;
-  text-align: center;
-}
-
-.log {
-  margin-top: 12px;
-  margin-bottom: 6px;
-  width: 96.6%;
-  height: 200px;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-}
-
-.log-title {
-  margin-top: 60px;
-}
-
-textarea {
-  -webkit-app-region: no-drag;
-  border: none;
-  outline: none;
-  resize: none;
-  background-color: transparent;
-  font-size: 17px;
-  width: 1000px;
-  height: 195px;
-}
-
-textarea::-webkit-scrollbar {
-  width: 16px;
-  height: 6px;
-}
-
-textarea::-webkit-scrollbar-thumb {
-  border-radius: 3px;
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  background-color: #c3c3c3;
-}
-
-textarea::-webkit-scrollbar-track {
-  background-color: transparent;
-}
+@import url('./main.css');
 </style>
