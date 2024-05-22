@@ -107,11 +107,34 @@ function handleAlarmReportMonitorPath() {
     const fileStatus = checkPathExists(compeletePath)
     if (fileStatus.isExist && fileStatus.isFile) {
       // 找到目标文件夹下包含对应年月日的文件
-      if (fileName.includes(fileNameDate.slice(0, 8))) {
+      const yesterdayDate = getYesterdayDate(fileNameDate)
+      if (fileName.includes(yesterdayDate)) {
         readAlarmReportFile(compeletePath, fileName)
       }
     }
   })
+}
+
+function getYesterdayDate(date: string): string {
+  // 解析输入日期字符串
+  const year = parseInt(date.slice(0, 4), 10)
+  const month = parseInt(date.slice(4, 6), 10) - 1 // 月份需要减 1，因为 JavaScript 的月份是从 0 开始的
+  const day = parseInt(date.slice(6, 8), 10)
+
+  // 创建 Date 对象
+  const inputDate = new Date(year, month, day)
+
+  // 获取昨天的日期
+  const yesterday = new Date(inputDate)
+  yesterday.setDate(inputDate.getDate() - 1)
+
+  // 构造昨天日期的字符串
+  const yesterdayYear = yesterday.getFullYear()
+  const yesterdayMonth = (yesterday.getMonth() + 1).toString().padStart(2, '0') // 月份加 1，并且保证是两位数
+  const yesterdayDay = yesterday.getDate().toString().padStart(2, '0') // 日期保证是两位数
+
+  // 返回格式化后的昨天日期字符串
+  return `${yesterdayYear}${yesterdayMonth}${yesterdayDay}`
 }
 
 function readAlarmReportFile(compeletePath: string, toMoveFileName: string) {
