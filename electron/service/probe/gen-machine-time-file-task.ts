@@ -56,6 +56,9 @@ function handleMachineTimeMonitorPath() {
   })
 }
 
+let sourceMTCompeletePath: string
+let toMoveMTCompeletePath: string
+
 function readMachineTimeFile(compeletePath: string, toMoveFileName: string) {
   // 获取字符编码
   const binary = readFileSync(compeletePath, { encoding: 'binary' })
@@ -92,7 +95,8 @@ function readMachineTimeFile(compeletePath: string, toMoveFileName: string) {
       filePathObj.machineTimeMovePath,
       toMoveFileName,
     )
-    moveFile(compeletePath, toMoveCompeletePath)
+    sourceMTCompeletePath = compeletePath
+    toMoveMTCompeletePath = toMoveCompeletePath
   })
 }
 
@@ -162,7 +166,13 @@ function readAlarmReportFile(compeletePath: string, toMoveFileName: string) {
         filePathObj.machineTimeOutputPath,
         resultFileName,
       )
-      write2excel(resultFilePath, machineTimeExcel)
+      let success = write2excel(resultFilePath, machineTimeExcel)
+      if (success) {
+        win.webContents.send(
+          'probe:log',
+          `Excel寫入成功，文件所在位置：${resultFilePath}`,
+        )
+      }
     } catch (err) {
       win.webContents.send('probe:log', `Excel寫入時發生錯誤：${err}`)
     }
@@ -171,6 +181,7 @@ function readAlarmReportFile(compeletePath: string, toMoveFileName: string) {
       toMoveFileName,
     )
     moveFile(compeletePath, toMoveCompeletePath)
+    moveFile(sourceMTCompeletePath, toMoveMTCompeletePath)
   })
 }
 
