@@ -1,10 +1,9 @@
 import type { BrowserWindow } from 'electron'
 import type { WorkSheet } from 'node-xlsx'
 import { scheduleJob } from 'node-schedule'
-import { readdirSync, renameSync, createReadStream, readFileSync } from 'fs'
-import { createInterface } from 'readline'
+import { readdirSync, renameSync, readFileSync } from 'fs'
 import { detect } from 'jschardet'
-import { decodeStream } from 'iconv-lite'
+import { decode } from 'iconv-lite'
 import { join } from 'path'
 import { cloneDeep } from 'lodash'
 import { checkPathExists, write2excel } from 'e/utils'
@@ -48,10 +47,12 @@ function handleMachineTimeMonitorPath() {
     const fileStatus = checkPathExists(compeletePath)
     if (fileStatus.isExist && fileStatus.isFile) {
       const tempArray = fileName.split('-')
-      fileNameDate = tempArray[1]
       machineNo = tempArray[0]
+      fileNameDate = tempArray[1]
+      if (!fileNameDate) {
+        return
+      }
       readMachineTimeFile(compeletePath, fileName)
-      handleAlarmReportMonitorPath()
     }
   })
 }
@@ -60,19 +61,15 @@ let sourceMTCompeletePath: string
 let toMoveMTCompeletePath: string
 
 function readMachineTimeFile(compeletePath: string, toMoveFileName: string) {
-  // 获取字符编码
-  const binary = readFileSync(compeletePath, { encoding: 'binary' })
-  const txt = detect(binary)
-  // 创建文件流逐行读取
-  const rl = createInterface({
-    input: createReadStream(compeletePath).pipe(decodeStream(txt.encoding)),
-    output: process.stdout,
-    terminal: false,
-  })
-  rl.on('line', (line) => {
+  const content: Buffer = readFileSync(compeletePath)
+  const txt = detect(content)
+  const decodedContent: string = decode(content, txt.encoding)
+
+  const lines: string[] = decodedContent.split('\n')
+  for (const line of lines) {
     const array: string[] = line.split(',')
     if (array.length < 2) {
-      return
+      continue
     }
     const matchObj = {
       'Total Chip': 1,
@@ -86,24 +83,21 @@ function readMachineTimeFile(compeletePath: string, toMoveFileName: string) {
     sheet.data[1][0] = machineNo
     const index: number = matchObj[array[0]]
     if (index === undefined) {
-      return
+      continue
     }
     sheet.data[1][index] = array[1]
-  })
-  rl.on('close', () => {
-    const toMoveCompeletePath = join(
-      filePathObj.machineTimeMovePath,
-      toMoveFileName,
-    )
-    sourceMTCompeletePath = compeletePath
-    toMoveMTCompeletePath = toMoveCompeletePath
-  })
+  }
+  const toMoveCompeletePath = join(
+    filePathObj.machineTimeMovePath,
+    toMoveFileName,
+  )
+  sourceMTCompeletePath = compeletePath
+  toMoveMTCompeletePath = toMoveCompeletePath
+
+  handleAlarmReportMonitorPath()
 }
 
 function handleAlarmReportMonitorPath() {
-  if (!fileNameDate) {
-    return
-  }
   const path = filePathObj.alarmReportMonitorPath
   const files = readdirSync(path)
   files.forEach((fileName) => {
@@ -142,47 +136,45 @@ function getYesterdayDate(date: string): string {
 }
 
 function readAlarmReportFile(compeletePath: string, toMoveFileName: string) {
-  const binary = readFileSync(compeletePath, { encoding: 'binary' })
-  const txt = detect(binary)
-  // 创建文件流逐行读取
-  const rl = createInterface({
-    input: createReadStream(compeletePath).pipe(decodeStream(txt.encoding)),
-    output: process.stdout,
-    terminal: false,
-  })
+  const content: Buffer = readFileSync(compeletePath)
+  const txt = detect(content)
+  const decodedContent: string = decode(content, txt.encoding)
+
+  const lines: string[] = decodedContent.split('\n')
   let fristLine = true
-  rl.on('line', (line) => {
+  for (const line of lines) {
     if (fristLine) {
       fristLine = false
-      return
+      continue
     }
     sheet.data.push(line.split(','))
-  })
-  rl.on('close', () => {
-    fristLine = true
-    const resultFileName = `MachineTime-${machineNo}-${fileNameDate}.xlsx`
-    try {
-      const resultFilePath = join(
-        filePathObj.machineTimeOutputPath,
-        resultFileName,
-      )
-      let success = write2excel(resultFilePath, machineTimeExcel)
-      if (success) {
-        win.webContents.send(
-          'probe:log',
-          `Excel寫入成功，文件所在位置：${resultFilePath}`,
-        )
-      }
-    } catch (err) {
-      win.webContents.send('probe:log', `Excel寫入時發生錯誤：${err}`)
-    }
-    const toMoveCompeletePath = join(
-      filePathObj.machineTimeMovePath,
-      toMoveFileName,
+  }
+
+  fristLine = true
+  const resultFileName = `MachineTime-${machineNo}-${fileNameDate}.xlsx`
+  try {
+    const resultFilePath = join(
+      filePathObj.machineTimeOutputPath,
+      resultFileName,
     )
-    moveFile(compeletePath, toMoveCompeletePath)
-    moveFile(sourceMTCompeletePath, toMoveMTCompeletePath)
-  })
+    let success = write2excel(resultFilePath, machineTimeExcel)
+    if (success) {
+      win.webContents.send(
+        'probe:log',
+        `Excel寫入成功，文件所在位置：${resultFilePath}`,
+      )
+    }
+  } catch (err) {
+    win.webContents.send('probe:log', `Excel寫入時發生錯誤：${err}`)
+  }
+  const toMoveCompeletePath = join(
+    filePathObj.alarmReportMovePath,
+    toMoveFileName,
+  )
+  moveFile(compeletePath, toMoveCompeletePath)
+  moveFile(sourceMTCompeletePath, toMoveMTCompeletePath)
+  machineTimeExcel = cloneDeep(originMachineTimeExcelData)
+  sheet = machineTimeExcel[0]
 }
 
 function moveFile(sourcePath: string, targetPath: string): boolean {
