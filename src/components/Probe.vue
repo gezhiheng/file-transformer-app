@@ -237,7 +237,10 @@ const probeStdBtnOnclick = async () => {
   if (!isAuthorization()) {
     return
   }
-  const filePath = await win.api.handle('dialog:openFile')
+  const filePath = await win.api.handle(
+    'dialog:openFile',
+    'probeStdDefaultPath',
+  )
   if (filePath) {
     probeStdBtnText.value = filePath
   }
@@ -247,7 +250,10 @@ const probeDailyBtnOnclick = async () => {
   if (!isAuthorization()) {
     return
   }
-  const filePath = await win.api.handle('dialog:openFile')
+  const filePath = await win.api.handle(
+    'dialog:openFile',
+    'probeDlyDefaultPath',
+  )
   if (filePath) {
     probeDailyBtnText.value = filePath
   }

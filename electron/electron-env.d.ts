@@ -41,6 +41,8 @@ interface Config {
   probeStandardPath?: string
   probeDailyPath?: string
   probeOutputPath?: string
+  probeStdDefaultPath?: string
+  probeDlyDefaultPath?: string
 }
 
 interface ProbeMachineTimeFilePathObj {
