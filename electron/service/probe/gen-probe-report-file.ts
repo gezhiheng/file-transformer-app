@@ -3,6 +3,7 @@ import type { WorkSheet } from 'node-xlsx'
 import { readFileSync } from 'fs'
 import { cloneDeep } from 'lodash'
 import { join } from 'path'
+import Decimal from 'decimal.js'
 import { checkPathExists, write2excel } from 'e/utils'
 import originProbeExcelData from './origin-probe-excel-data'
 
@@ -123,9 +124,8 @@ function subtract(str1: string, str2: string): number {
     return -1
   }
 
-  const result: number = Math.abs(num1 - num2) // 计算绝对值差
-
-  return parseFloat(result.toFixed(3)) // 将结果保留三位小数并返回
+  const result = new Decimal(num1).minus(num2).toNumber()
+  return result
 }
 
 export default genProbeFile
