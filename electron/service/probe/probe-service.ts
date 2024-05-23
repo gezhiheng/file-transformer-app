@@ -41,7 +41,11 @@ function probeService(mainWindow: BrowserWindow) {
     genProbeFile(filePathObj, mainWindow)
   })
 
-  // TODO 保存日志
+  ipcMain.on('probe:saveLog', (event, log) => {
+    const success = saveLog(log, 'probe')
+    const message = success ? '日志保存成功' : '日志保存失敗'
+    mainWindow.webContents.send('probe:log', message)
+  })
 }
 
 export default probeService

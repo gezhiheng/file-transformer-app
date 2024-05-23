@@ -364,7 +364,7 @@ const genPBFileBtnOnclick = () => {
 }
 
 const saveLogBtnOnclick = () => {
-  win.api.send('saveLog', log.value)
+  win.api.send('probe:saveLog', log.value)
 }
 </script>
 
