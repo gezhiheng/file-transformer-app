@@ -1,18 +1,37 @@
-# Vue 3 + TypeScript + Vite
+# File Transformer 转档应用
+一个自动将机台档案转为Excel文件的跨平台应用 ✨
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+## 功能
+- 根据不同机型的产品档案（分选机型和点测机型）来执行相应转换为Excel的逻辑
+- 每日定时处理档案
+- 实时监控路径如果有档案产生便会执行转档操作
+- 支持保存生成的日志
+- 手动选择路径之后会保存选择的路径
 
-## Recommended IDE Setup
+## 界面
+![](./doc/assets/docpic1.png)
+![](./doc/assets/docpic2.png)
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+## 注意
+软件是绑定MAC地址的，第一次使用需要授权，授权码使用MD5加盐加密生成
+![](./doc/assets/docpic3.png)
 
-## Type Support For `.vue` Imports in TS
+## 技术栈
+- 使用Vite构建
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
+主要技术：
+- Electron
+- TypeScript
+- Vue3
+- Element plus
+- Pinia
+- Prettier
 
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
-
-1. Disable the built-in TypeScript Extension
-   1. Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-   2. Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
+依赖库：
+- electron-forge
+- node-xlsx
+- node-schedule
+- iconv-lite
+- md5
+- decimal.js
+- sweetalert2
